@@ -1,0 +1,322 @@
+	.tabMenu{
+		border-style:solid;
+		border-width:thin;
+		position:absolute;
+		top:80px;
+		height:500px;
+		width:1300px;
+	}
+	.buildingLine{
+		border-style:solid;
+		border-width:thin;
+		position:relative;
+		height:25px;
+		width:500px;
+	}
+	.building {
+		border-style:solid;
+		border-width:thin;
+		width:130%;
+		display: inline-block;
+		position:absolute;
+		background-color:#FFFFFF;
+		height: 60px;
+	}
+	.building .tooltiptext{
+		visibility:hidden;
+		position:absolute;
+		width:300px;
+		background-color: #495558;
+		color: #fff;
+		text-align:center;
+		font-family: "Courier New", Courier, monospace;
+		font-size: 12px;
+		border-radius: 6px;
+		left:105%;
+		top:0%;
+		z-index: 1;
+	}
+	.building:hover .tooltiptext{
+		visibility: visible;
+	}
+	td.value{
+		text-align:right;
+		width: 200px;
+	}
+	td.shrink{
+		white-space: nowrap;
+		width: 1px;
+	}
+	.buyable:hover{
+		cursor:hand;
+	}
+
+	.buyable{
+		display: inline-block;
+		height: 60px;
+		width: 73px;
+		border-style:solid;
+		border-width: 1px;
+		margin-right: 1px;
+		background-size:contain;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+	}
+	.upgable{
+		display: inline-block;
+		height: 60px;
+		width: 73px;
+		border-style:solid;
+		border-width: 1px;
+		margin-right: 1px;
+		background-size:contain;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+	}
+	.upgHolder, .upgHolderD, .upgHolderC, .upgHolderF{
+		width:73px;
+		display: block;
+		position:relative;
+		background-color:#FFFFFF;
+		height: 60px;
+	}
+	.upgHolder:hover, .upgHolderC:hover, .upgHolderF:hover{
+		cursor:hand;
+	}
+	.upgHolder .tooltiptext, .upgHolderD .tooltiptext, .upgHolderC .tooltiptext, .upgHolderF .tooltiptext{
+		visibility:hidden;
+		position:absolute;
+		width:200px;
+		background-color: #495558;
+		color: #fff;
+		text-align:center;
+		font-family: "Courier New", Courier, monospace;
+		font-size: 12px;
+		border-radius: 6px;
+		left:105%;
+		top:0%;
+		z-index: 1;
+	}
+	.upgHolder:hover .tooltiptext, .upgHolderC:hover .tooltiptext{
+		visibility:visible;
+	}
+
+	.give{
+		position:absolute;
+		left:100;
+	}
+	.giveTotal{
+		position:absolute;
+		left:180;
+	}
+	.digData{
+		position:absolute;
+		left:190;
+	}
+	.shoeData{
+		position:absolute;
+		left:190;
+		display:none;
+	}
+	.upgrade{
+		position:absolute;
+		z-index: 1;
+		width:582px;
+		height:697px;
+		left: 25%;
+		top:0%;
+		border:solid;
+		background-color:#FFFFFF;
+		background-size:100%;
+		overflow:hidden;
+		display:none;
+	}
+	.upgradeBox{
+		width:64px;
+		height:66px;
+		position:absolute;
+		display:none;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+	}
+	.upgradeLineSlant1{
+		width:30px;
+		height:36px;
+		position:absolute;
+		background-image:url("art/upgBar1.png");
+		display:none;		
+	}
+	.upgradeLineSlant2{
+		width:30px;
+		height:36px;
+		position:absolute;
+		background-image:url("art/upgBar2.png");
+		display:none;	
+	}
+	.upgradeLineVert{
+		width:6px;
+		height:39px;
+		position:absolute;
+		background-image:url("art/upgBar3.png");
+		display:none;	
+	}
+	.upgradeLineHor{
+		width:40px;
+		height:6px;
+		position:absolute;
+		background-image:url("art/upgBar4.png");
+		display:none;	
+	}
+	.upgradeBuy:hover{
+		cursor:hand;
+	}
+	.upgradeBox:hover .tooltipLeft{
+		visibility: visible;
+	}
+	.upgradeBox:hover .tooltipRight{
+		visibility: visible;
+	}
+	.upgradeBox .tooltipRight{
+		visibility:hidden;
+		position:absolute;
+		width:180px;
+		background-color: #495558;
+		color: #fff;
+		text-align:center;
+		font-family: "Courier New", Courier, monospace;
+		font-size: 12px;
+		border-radius: 6px;
+		left:105%;
+		top:0%;
+		z-index: 2;
+	}
+	.upgradeBox .tooltipLeft{
+		visibility:hidden;
+		position:absolute;
+		width:180px;
+		background-color: #495558;
+		color: #fff;
+		text-align:center;
+		font-family: "Courier New", Courier, monospace;
+		font-size: 12px;
+		border-radius: 6px;
+		Right:105%;
+		top:0%;
+		z-index: 2;
+	}
+	.upgAmt{
+		width:28px;
+		height:18px;
+		position:absolute;
+		background-color:#F7E2FA;
+		border: 2px solid black;
+		display:none;
+	}
+	.upgTitle{
+		font-weight: bold;
+		color: #FFD700;
+	}
+	.upgCostText{
+		margin-left: auto;
+		margin-right: auto;
+		text-align: center;
+		font-size: 250%;
+		color: #B0BDB3;
+		text-shadow:
+		-1px -1px 0 #000,
+		1px -1px 0 #000,
+		-1px 1px 0 #000,
+		1px 1px 0 #000;
+	}
+	.upgCostValue{
+		color: Purple;
+	}
+	.manaTank{
+		position:absolute;
+		height:510px;
+		width:70px;
+		border: 2px solid black;
+		top: 5%;
+	}
+	.manaTank .tooltiptext{
+		visibility:hidden;
+		position:absolute;
+		width:300px;
+		background-color: #495558;
+		color: #fff;
+		text-align:center;
+		font-family: "Courier New", Courier, monospace;
+		font-size: 12px;
+		border-radius: 6px;
+		top: 40%;
+		right:105%;
+		z-index: 1;
+	}
+	.manaTank:hover .tooltiptext{
+		visibility: visible;
+	}
+	.manaBarBackground1{
+		position: absolute;
+		width: 70px;
+		height: 100%;
+		background-color: blue;
+	}
+	.manaBarBackground2{
+		position: absolute;
+		width: 70px;
+		height: 100%;
+		background-color: green;
+	}
+	.manaBarBackground3{
+		position: absolute;
+		width: 70px;
+		height: 100%;
+		background-color: yellow;
+	}
+	.manaBar{
+		position:absolute;
+		width: 70px;
+		height: 100%;
+		background-color: white;
+	}
+	.manaDumpButton1{
+		position:absolute;
+		height:30px;
+		width:70px;
+		border: 2px solid blue;
+		top: 0%;
+	}
+	.manaDumpButton2{
+		position:absolute;
+		height:30px;
+		width:70px;
+		border: 2px solid green;
+		top: 0%;
+	}
+	.manaDumpButton3{
+		position:absolute;
+		height:30px;
+		width:70px;
+		border: 2px solid yellow;
+		top: 0%;
+	}
+	.manaDumpButton1:hover, .manaDumpButton2:hover, .manaDumpButton3:hover{
+		cursor:hand;
+	}
+	.manaDumpButton1 .tooltiptext, .manaDumpButton2 .tooltiptext, .manaDumpButton3 .tooltiptext{
+		visibility:hidden;
+		position:absolute;
+		width:300px;
+		background-color: #495558;
+		color: #fff;
+		text-align:center;
+		font-family: "Courier New", Courier, monospace;
+		font-size: 12px;
+		border-radius: 6px;
+		top:0%;
+		right:105%;
+		z-index: 1;
+	}
+	.manaDumpButton1:hover .tooltiptext, .manaDumpButton2:hover .tooltiptext, .manaDumpButton3:hover .tooltiptext{
+		visibility: visible;
+	}
