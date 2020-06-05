@@ -4,7 +4,7 @@
 		position:absolute;
 		top:80px;
 		height:500px;
-		width:1300px;
+		width:1100px;
 	}
 	.buildingLine{
 		border-style:solid;
@@ -13,6 +13,88 @@
 		height:25px;
 		width:500px;
 	}
+	.buildingLineName{
+		border-style:solid;
+		border-width:thin;
+		border-color:green;
+		left:0px;
+	}
+	.buildingLineAmount{
+		border-style:solid;
+		border-width:thin;
+		border-color:purple;
+		position:absolute;
+		left:200px;
+	}
+	.buildingLineEarned{
+		border-style:solid;
+		border-width:thin;
+		border-color:red;
+		position:absolute;
+		right:0px;
+	}
+	.upgradeHolder{
+		border-style:solid;
+		border-width:thin;
+		border-color:blue;
+		position:absolute;
+		right:0px;
+		top:0px;
+		height:500px;
+		width:500px;
+	}
+	.upgradeItem{
+		border-style:solid;
+		border-width:thin;
+		border-color:red;
+		position:relative;
+		display:inline-block;
+		margin:-1px;
+		height:64px;
+		width:64px;
+	}
+	
+	
+	.buyPack{
+		bottom:1px;
+		position:absolute;
+		text-align:center;
+		width:40%;
+		
+	}
+	.buyPackButton{
+		position:absolute;
+		left:7%;
+		border: solid 1px blue;
+		cursor:pointer;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+	}
+	.cardDisabled{
+		background-color:grey;
+		cursor:not-allowed;
+		border:solid 1px rgb(28,17,89);
+	}
+	.buyAmount{
+		position:relative;
+		border: solid 1px blue;
+		cursor:pointer;
+		left:13%;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+	}
+	.packCost{
+		right:-30%;
+		position:absolute;
+	}
+	
+
+	
+	
+	
+	
+	
+	
 	.building {
 		border-style:solid;
 		border-width:thin;
