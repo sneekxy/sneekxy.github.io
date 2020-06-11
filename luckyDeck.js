@@ -2,15 +2,17 @@ var endTime;
 var bil = 1000000000;
 var timeValue = [0, "none"];
 var playerStats = {
-	gold: 100,
+	gold: 90,
 	gps: 0,
 	gps_multi: 1,
 	cardsOwned: 0,
 	luck: 1,
 	gold1Earned: 0,
+	goldUpgrades: [0,0,0,0,0,0,0,0,0,0],
 	buyAmount: 1,
+	packMulti: 1.03,
 	packsBought: 0,
-	packSize: 3,
+	packSize: 1,
 	unlockUncommon: 0,
 	unlockRare: 0,
 	upgradeChance: 20,
@@ -34,6 +36,8 @@ var playerStats = {
 function pageInit(){
 	endTime = Date.now() + 1000;
 	startGame();
+	createRandomCard(1);
+	updateGameDisplay();
 }
 function startGame(){
 	mainTick(1);
@@ -42,6 +46,7 @@ function mainLoop(){
 	updateGainsThisTick();
 	applyGainsThisTick();
 	updateGameDisplay();
+	populateUpgrades();
 }
 
 function doTest(){
@@ -83,7 +88,7 @@ function oneOfEvery(){
 }
 function showStats(){
 	for(var x = 1; x < 9; x++){
-		console.log(playerStats["totalGold"+x+"Earned"]/playerStats.totalGoldEarned);
+		console.log((playerStats["totalGold"+x+"Earned"]/playerStats.totalGoldEarned)+" : "+playerStats["totalGold"+x+"Earned"]);
 	}
 }
 
@@ -143,88 +148,226 @@ function applyEffect(effect, amt, ugl){
 		switch(effList2[0]){
 			case("gold"): 
 				effList2[1] *= amt; 
+				effList2[1] = effList2[1] * (playerStats.goldUpgrades[1]+1);
 				playerStats.gps += Number(effList2[1]); 
 				applyGoldBucket(Number(effList2[1]), ugl); break;
 				
 			case("cgold"): 
 				var goldVal = 0;
-				if(amt <= 25){
-					if(doLuck(Number(effList2[2]))){
-						goldVal = effList2[1] * amt;
+				if(amt < 50){
+					var perc = Number(effList2[2]) + (playerStats.goldUpgrades[2]*5);
+
+					var goldAmt = Number(effList2[1]);
+					for(var x = 0; x < amt; x++){
+						if(doLuck(perc)){
+							goldVal += goldAmt;
+						}
 					}
 				}
 				else{
-					var randNum = doRangeLuck(0, 100, false);
-					var luckPercent = getLuckPercent(effList2[2]);
-					if(randNum <= luckPercent){
-						goldVal = effList2[1] * amt;
+					var scalVal = Number(effList2[1] * amt/50);
+					var perc = Number(effList2[2]) + (playerStats.goldUpgrades[2]*5);
+					for(var x = 0; x < 50; x++){
+						if(doLuck(perc)){
+							goldVal += scalVal;
+						}
 					}
-					else{
-						var leftOver = (randNum - luckPercent);
-						goldVal = Math.floor(effList2[1] * amt * (leftOver/100));
-					}
-				} 
+				}
+				goldVal = Math.floor(goldVal);
 				playerStats.gps += Number(goldVal); 
 				applyGoldBucket(goldVal, ugl);
 				break;
-			case("rgold"):
-				effList2[1] *= amt;
-				effList2[2] *= amt;
-				var goldGain = Number(doRangeLuck(effList2[1], effList2[2], true)); 
-				playerStats.gps += goldGain;
-				applyGoldBucket(goldGain, ugl); break;
-				break;
-			case("dgold"):
-				effList2[1] *= amt;
-				var keepGoing = true;
-				var procs = 0;
-				while(keepGoing){
-					if(doLuck(effList2[2])){
-						procs++;
-						effList2[2] = Math.floor(effList2[2] * (1-effList2[3]));
-					}
-					else{
-						keepGoing = false;
+			case("mgold"):
+				var goldVal = 0;
+				if(amt < 50){
+					var upperVal = 0;
+					var lowerVal = 0;
+					var randVals = Number(effList2[2]) + playerStats.goldUpgrades[3];
+
+					var valCont = Number(effList2[1]);
+					for(var x=0; x<amt; x++){
+						switch(Math.floor(Math.random() * (randVals))){
+							case(0):upperVal = doRangeLuck(0, valCont+2, true); break;
+							case(1):lowerVal = valCont; upperVal = lowerVal * 2; break;
+							case(2):upperVal = doRangeLuck(0, valCont*4, true); break;
+							case(3):upperVal = valCont * 25; break;
+							case(4):lowerVal = valCont*3; upperVal = lowerVal*2; break;
+							case(5):lowerVal = 25; upperVal = lowerVal + (5*valCont);break;
+						}
+						goldVal += doRangeLuck(lowerVal, upperVal, true);
 					}
 				}
-				var goldearned = Number(effList2[1] * Math.pow(2,procs)); 
-				playerStats.gps += goldearned;
-				applyGoldBucket(goldearned, ugl); 
+				else{
+					var upperVal = 0;
+					var lowerVal = 0;
+					var randVals = Number(effList2[2]) + playerStats.goldUpgrades[3];
+					var valCont = Number(effList2[1]);
+					for(var x=0; x<50; x++){
+						switch(Math.floor(Math.random() * (randVals))){
+							case(0):upperVal = doRangeLuck(0, valCont+2, true); break;
+							case(1):lowerVal = valCont; upperVal = lowerVal * 2; break;
+							case(2):upperVal = doRangeLuck(0, valCont*5, true); break;
+							case(3):upperVal = valCont * 25; break;
+							case(4):lowerVal = valCont*3; upperVal = lowerVal*2; break;
+							case(5):lowerVal = 25; upperVal = lowerVal + (5*valCont);break;
+						}
+						goldVal += (doRangeLuck(lowerVal, upperVal, true) * amt/50);
+					}
+				}
+				goldVal = Math.floor(goldVal);
+				playerStats.gps += goldVal;
+				applyGoldBucket(goldVal, ugl); break;
+			case("rgold"):
+				var goldVal = 0;
+				if(amt < 50){
+					var highVal = Number(effList2[2]);
+					var lowVal = Math.floor(Number(effList2[1]) + (playerStats.goldUpgrades[4]*(highVal/3)));
+
+					for(var x = 0; x < amt; x++){
+						goldVal += doRangeLuck(lowVal, highVal, true);
+					}
+				}
+				else{
+					var highVal = Number(effList2[2]);
+					var lowVal = Math.floor(Number(effList2[1]) + (playerStats.goldUpgrades[4]*(highVal/3)));
+					for(var x = 0; x < 50; x++){
+						goldVal += (doRangeLuck(lowVal, highVal, true) * amt/50);
+					}
+				}
+				playerStats.gps += goldVal;
+				applyGoldBucket(goldVal, ugl); break;
+				break;
+			case("dgold"):
+				var goldVal = 0;
+				if(amt < 50){
+					var perc = Number(effList2[2]);
+					var reduc = Number(effList2[3]);
+					var baseVal = Number(effList2[1]);
+					for(var x = 0; x < amt; x++){
+						var keepGoing = true;
+						var procs = 0 + playerStats.goldUpgrades[7];
+						while(keepGoing){
+							if(doLuck(perc)){
+								procs++;
+								perc = perc * (1-reduc);
+							}
+							else{
+								keepGoing = false;
+							}
+						}
+
+						goldVal += (baseVal * Math.pow(2,procs));
+					}
+				}
+				else{
+					var perc = Number(effList2[2]);
+					var reduc = Number(effList2[3]);
+					var baseVal = Number(effList2[1] * amt/50);
+					for(var x = 0; x < 50; x++){
+						var keepGoing = true;
+						var procs = 0 + playerStats.goldUpgrades[7];
+						while(keepGoing){
+							if(doLuck(perc)){
+								procs++;
+								perc = perc * (1-reduc);
+							}
+							else{
+								keepGoing = false;
+							}
+						}
+						goldVal += (baseVal * Math.pow(2,procs));
+					}
+				}
+				
+				playerStats.gps += goldVal;
+				applyGoldBucket(goldVal, ugl); 
 				break;
 			case("tgold"):
-				var baseIncrease = 1 + Math.floor(effList2[1] * Math.log10(1.3 * getCardCount())*100)/10000;
+				var baseIncrease = 1 + Math.floor(Number(effList2[1])+(playerStats.goldUpgrades[9]*1.5) * Math.log10((1.3+(playerStats.goldUpgrades[9]*2)) * getCardCount())*100)/10000;
 				var totalIncrease = Math.floor(baseIncrease * (1+(((1-Math.pow(effList2[2],amt))/(1-effList2[2])))/10)*100)/100;
 				playerStats.gps_multi *= totalIncrease;
 				applyGoldBucket(((totalIncrease-1)*100), ugl);
 			break;
 			case("lgold"):
-				var highValue = 0;
-				for(var x = 0; x < getLuckReroll(); x++){
-					var numHolder = [];
-					for(var y = 0; y < effList2[1]; y++){
-						numHolder.push(doRangeLuck(1, effList2[2], true));
-					}
-					var highNum = calcLottery(numHolder);
-					if(highNum > highValue){
-						highValue = highNum;
+				var goldVal = 0;
+				if(amt < 50){
+					var lines = Number(effList2[1]) + playerStats.goldUpgrades[8];
+
+					var upper = Number(effList2[2]);
+					var luckRoll = getLuckReroll();
+					for(var z = 0; z < amt; z++){
+						var highValue = 0;
+						
+						for(var x = 0; x < luckRoll; x++){
+							var numHolder = [];
+							for(var y = 0; y < lines; y++){
+								numHolder.push(doRangeLuck(1, upper, true));
+							}
+							var highNum = calcLottery(numHolder);
+							if(highNum > highValue){
+								highValue = highNum;
+							}
+						}
+						goldVal += highValue;
 					}
 				}
-				highValue *= amt; 
-				if(highValue == 0){
-					highValue = Math.floor(amt * Math.random());
-				}
-				playerStats.gps += highValue;
-				applyGoldBucket(highValue, ugl);
+				else{
+					var lines = Number(effList2[1]) + playerStats.goldUpgrades[8];
+					var upper = Number(effList2[2]);
+					var luckRoll = getLuckReroll();
+					for(var z = 0; z < 50; z++){
+						var highValue = 0;
+						
+						for(var x = 0; x < luckRoll; x++){
+							var numHolder = [];
+							for(var y = 0; y < lines; y++){
+								numHolder.push(doRangeLuck(1, upper, true));
+							}
+							var highNum = calcLottery(numHolder);
+							if(highNum > highValue){
+								highValue = highNum;
+							}
+						}
+						goldVal += (highValue * amt/50);
+					}
+				}					
+				goldVal = Math.floor(goldVal);
+				playerStats.gps += goldVal;
+				applyGoldBucket(goldVal, ugl);
 			break;
 			case("kgold"):
-				var totGold = 0;
-				for(var x = 0; x < Math.round(getLuckReroll()/2); x++){
-					totGold += doRangeLuck(1, effList2[1], true);
-					totGold *= 1+((playerStats.luck-x)/10);
+				var goldVal = 0;
+				if(amt < 50){
+					for(var y = 0; y < amt; y++){
+						var totGold = 0;
+						var times = Math.round(getLuckReroll()/2);
+						var upper = effList2[1];
+						var pluck = playerStats.luck + playerStats.goldUpgrades[6];
+
+						for(var x = 0; x < times; x++){
+							totGold += doRangeLuck(0, upper, true);
+							totGold *= 1+((pluck-x)/10);
+						}
+						goldVal += totGold;
+					}
+				}	
+				else{
+					for(var y = 0; y < 50; y++){
+						var totGold = 0;
+						var times = Math.round(getLuckReroll()/2);
+						var upper = effList2[1];
+						var pluck = playerStats.luck + playerStats.goldUpgrades[6];
+						for(var x = 0; x < times; x++){
+							totGold += doRangeLuck(0, upper, true);
+							totGold *= 1+((pluck-x)/10);
+						}
+						goldVal += (totGold * amt/50);
+					}
 				}
-				totGold = Math.floor(totGold * amt);
-				playerStats.gps += totGold;
-				applyGoldBucket(totGold, ugl);
+				goldVal = Math.floor(goldVal);
+					
+				playerStats.gps += goldVal;
+				applyGoldBucket(goldVal, ugl);
 			break;
 		}
 	}
@@ -288,7 +431,7 @@ function buyPacks(){
 		if(playerStats.buyAmount == 1){
 			playerStats.gold -= onePackCost();
 			playerStats.packsBought++;
-			for(var x = 0; x < playerStats.packSize; x++){
+			for(var x = 0; x < (playerStats.packSize + playerStats.goldUpgrades[0]); x++){
 				createRandomCard();
 			}
 		}
@@ -297,7 +440,7 @@ function buyPacks(){
 			if(maxPacks > 0){
 				playerStats.gold -= totalPackCost(maxPacks);
 				playerStats.packsBought += maxPacks;
-				for(var x = 0; x < (playerStats.packSize * maxPacks); x++){
+				for(var x = 0; x < ((playerStats.packSize + playerStats.goldUpgrades[0]) * maxPacks); x++){
 					createRandomCard();
 				}
 			}
@@ -352,11 +495,22 @@ function totalPackCost(n){
 	return retVal;
 }
 function nPackCost(n){
-	return Math.floor((100 * (1+n) * Math.pow(1.03, n)));
+	return Math.floor((100 * (1+n) * Math.pow(playerStats.packMulti, n)));
 }
 
 function onePackCost(){
-	return Math.floor((100 * (1+playerStats.packsBought) * Math.pow(1.03, playerStats.packsBought)));
+	var packVal = playerStats.packsBought;
+	if(packVal <= 2){
+		packVal = 1;
+	}
+	if(packVal > 2 && packVal <= 8){
+		packVal = (packVal/3);
+	}
+	if(packVal > 8 && packVal <= 14){
+		packVal = (packVal/2);
+	}
+	
+	return Math.floor((100  * (packVal)) * Math.pow(playerStats.packMulti, (playerStats.packsBought)));
 }
 
 function doLuck(percent){

@@ -1,3 +1,7 @@
+	.gameBody{
+		background-color:black;
+		color:white;
+	}
 	.tabMenu{
 		border-style:solid;
 		border-width:thin;
@@ -40,20 +44,61 @@
 		position:absolute;
 		right:0px;
 		top:0px;
-		height:500px;
-		width:500px;
+		height:250px;
+		width:513px;
+	}
+	.upgradeHolderBought{
+		border-style:solid;
+		border-width:thin;
+		border-color:yellow;
+		position:absolute;
+		right:0px;
+		top:250px;
+		height:250px;
+		width:513px;
 	}
 	.upgradeItem{
 		border-style:solid;
 		border-width:thin;
 		border-color:red;
 		position:relative;
-		display:inline-block;
+		display:inline-flex;
+		cursor:pointer;
 		margin:-1px;
 		height:64px;
 		width:64px;
 	}
-	
+	.upgradeItemBought{
+		border-style:solid;
+		border-width:thin;
+		border-color:red;
+		position:relative;
+		display:inline-flex;
+		margin:-1px;
+		height:64px;
+		width:64px;
+	}
+	.upgradeItem .tooltip, .upgradeItemBought .tooltip{
+		visibility:hidden;
+		position:absolute;
+		width:300px;
+		background-color: #02adff;
+		color: #fff;
+		border: black 2px solid;
+		text-align:center;
+		font-family: "Courier New", Courier, monospace;
+		font-size: 12px;
+		text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+		border-radius: 6px;
+		padding-top: 3px;
+		padding-bottom: 3px;
+		left:105%;
+		top:2px;
+		z-index: 1;
+	}
+	.upgradeItem:hover .tooltip, .upgradeItemBought:hover .tooltip{
+		visibility: visible;
+	}
 	
 	.buyPack{
 		bottom:1px;

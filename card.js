@@ -1,14 +1,25 @@
-function createRandomCard(){
+function createRandomCard(spec){
 	var rarity = getRandomRarity();
 	var cardRarity;
 	var cardLimit;
-	switch(rarity){
-		case(0): cardRarity = commonCards; break;
-		case(1): cardRarity = uncommonCards; break;
-		case(2): cardRarity = rareCards; break;
+	if(spec != 1){
+		switch(rarity){
+			case(0): cardRarity = commonCards; break;
+			case(1): cardRarity = uncommonCards; break;
+			case(2): cardRarity = rareCards; break;
+		}
+		var cardNum = Math.floor(Math.random() * cardRarity.length);
+		
+		if(playerStats.goldUpgrades[5] == 0 && rarity == 0)
+			cardNum = cardNum%4;
+		var c = new card(cardRarity[cardNum]);
+		addCards(c, 1);
 	}
-	var c = new card(cardRarity[Math.floor(Math.random() * cardRarity.length)]);
-	addCards(c, 1);
+	else{
+		var c = new card(commonCards[0]);
+		addCards(c, 1);
+	}
+	
 	
 }
 function card(card){

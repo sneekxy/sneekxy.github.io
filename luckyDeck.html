@@ -7,7 +7,7 @@
 	<link rel="stylesheet" type="text/css" href="lucky.css">
 
 	</HEAD>
-	<BODY onload="pageInit()">
+	<BODY class="gameBody" onload="pageInit()">
 	<div id="wholeDocument">
 		cards:
 		<span id="cardList">
@@ -74,22 +74,15 @@
 			</div>
 			
 			<div id="buyPack" class="buyPack">
-				<span id="buyPackButton" class="buyPackButton" onClick="buyPacks()">Buy More Packs</span>
+				<span id="buyPackButton" class="buyPackButton" onClick="buyPacks()">Buy More Cards</span>
 				<span id="buyAmount" class="buyAmount" onClick="changeBuyAmount()">x1</span>
 				<span id="packCost" class="packCost">Cost 100 gold</span>
 			</div>
 			
 			
 			<span id="goldUpgrade" class="upgradeHolder">
-				<div id="upgrade1" class="upgradeItem"></div>
-				<div id="upgrade2" class="upgradeItem"></div>
-				<div id="upgrade3" class="upgradeItem"></div>
-				<div id="upgrade4" class="upgradeItem"></div>
-				<div id="upgrade5" class="upgradeItem"></div>
-				<div id="upgrade6" class="upgradeItem"></div>
-				<div id="upgrade7" class="upgradeItem"></div>
-				<div id="upgrade8" class="upgradeItem"></div>
-				<div id="upgrade9" class="upgradeItem"></div>
+			</span>
+			<span id="goldUpgradeBought" class="upgradeHolderBought">
 			</span>
 		</div>
 	</div>
@@ -101,5 +94,6 @@
 <script src="card.js"></script>
 <script src="luckyDeck.js"></script>
 <script src="cardDB.js"></script>
+<script src="upgrades.js"></script>
 
 </HTML>
