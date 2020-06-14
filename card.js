@@ -1,8 +1,9 @@
 function createRandomCard(spec){
-	var rarity = getRandomRarity();
+	var rarity;
 	var cardRarity;
 	var cardLimit;
-	if(spec != 1){
+	if(!(spec > 0)){
+		rarity = getRandomRarity();
 		switch(rarity){
 			case(0): cardRarity = commonCards; break;
 			case(1): cardRarity = uncommonCards; break;
@@ -12,11 +13,22 @@ function createRandomCard(spec){
 		
 		if(playerStats.goldUpgrades[5] == 0 && rarity == 0)
 			cardNum = cardNum%4;
+		if(rarity == 1){
+			if(cardNum == 0 && playerStats.goldUpgrades[10] == 0){
+				cardNum = 1;
+			}
+			if(cardNum > 5){
+				cardNum -= 4;
+			}
+		}
 		var c = new card(cardRarity[cardNum]);
 		addCards(c, 1);
 	}
 	else{
-		var c = new card(commonCards[0]);
+		if(spec == 1)
+			var c = new card(commonCards[0]);
+		if(spec == 2)
+			var c = new card(uncommonCards[1]);
 		addCards(c, 1);
 	}
 	
@@ -60,17 +72,18 @@ function addCards(c, num){
 function getRandomRarity(){
 	var retVal = 0;
 	var pass = true;
-	if(playerStats.unlockUncommon == 1){
+	if(playerStats.goldUpgrades[11] == 1){
 		while(pass){
 			if(doLuck(playerStats.upgradeChance)){
 				retVal++
+				pass = false;
 			}
 			else{
 				pass = false;
 			}
 		}
-		if(retVal > 2)
-			retVal = 2;
+		if(retVal > 1)
+			retVal = 1;
 	}
 	
 	return retVal;

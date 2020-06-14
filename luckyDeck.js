@@ -3,12 +3,18 @@ var bil = 1000000000;
 var timeValue = [0, "none"];
 var playerStats = {
 	gold: 90,
+	cat: 0,
+	cat_multi: 1,
+	cps: 0,
+	cps_multi: 1,
 	gps: 0,
 	gps_multi: 1,
 	cardsOwned: 0,
 	luck: 1,
 	gold1Earned: 0,
-	goldUpgrades: [0,0,0,0,0,0,0,0,0,0],
+	goldUpgrades: [0,0,0,0,0,0,0,0,0,0,0,
+				   0],
+	catUpgrades: [0,0,0,0,0],
 	buyAmount: 1,
 	packMulti: 1.03,
 	packsBought: 0,
@@ -31,12 +37,19 @@ var playerStats = {
 	totalGold7Earned: 0,
 	gold8Earned: 0,
 	totalGold8Earned: 0,
+	gold9Earned: 0,
+	totalGold9Earned: 0,
 	totalGoldEarned: 0,
+	
+	cat1Earned: 0,
+	totalCat1Earned: 0,
+	totalCatEarned: 0,
 };
 function pageInit(){
 	endTime = Date.now() + 1000;
 	startGame();
 	createRandomCard(1);
+	//oneOfEvery();
 	updateGameDisplay();
 }
 function startGame(){
@@ -46,7 +59,6 @@ function mainLoop(){
 	updateGainsThisTick();
 	applyGainsThisTick();
 	updateGameDisplay();
-	populateUpgrades();
 }
 
 function doTest(){
@@ -79,39 +91,59 @@ function updateGameDisplay(){
 	$('#cardList').text(formatNumber(playerStats.cardsOwned));
 	$('#gold').text(formatNumber(playerStats.gold));
 	showGoldBuildings();
+	if(playerStats.goldUpgrades[11] == 1){
+		$('#cats').text(formatNumber(playerStats.cat));
+		showCatBuildings();
+		$('#catMultiAmt').text(formatNumber(playerStats.cat));
+		$('#catMultiVal').text(getCatMulti());
+	}
 	calculatePackCost();
+	populateUpgrades();
 }
 function oneOfEvery(){
-	for(var x=0; x < 8; x++){
-		addCards(new card(commonCards[x]), 10000);
+	for(var x=2; x < 10; x++){
+		addCards(new card(uncommonCards[x]), 1);
 	}
 }
 function showStats(){
-	for(var x = 1; x < 9; x++){
+	for(var x = 1; x < 10; x++){
 		console.log((playerStats["totalGold"+x+"Earned"]/playerStats.totalGoldEarned)+" : "+playerStats["totalGold"+x+"Earned"]);
 	}
 }
 
 function applyGainsThisTick(){
+	playerStats.gps_multi = Number(playerStats.gps_multi * playerStats.cat_multi);
 	playerStats.gps = Number(Math.floor(playerStats.gps * playerStats.gps_multi));
-	playerStats.totalGold1Earned += playerStats.gold1Earned;
-	playerStats.totalGold2Earned += playerStats.gold2Earned;
-	playerStats.totalGold3Earned += playerStats.gold3Earned;
-	playerStats.totalGold4Earned += playerStats.gold4Earned;
-	playerStats.totalGold5Earned += playerStats.gold5Earned;
-	playerStats.totalGold6Earned += playerStats.gold6Earned;
-	playerStats.totalGold7Earned += playerStats.gold7Earned;
+	playerStats.cps = Number(Math.floor(playerStats.cps * playerStats.cps_multi));
+	
+	playerStats.totalGold1Earned += Math.floor(playerStats.gold1Earned * playerStats.gps_multi);
+	playerStats.totalGold2Earned += Math.floor(playerStats.gold2Earned * playerStats.gps_multi);
+	playerStats.totalGold3Earned += Math.floor(playerStats.gold3Earned * playerStats.gps_multi);
+	playerStats.totalGold4Earned += Math.floor(playerStats.gold4Earned * playerStats.gps_multi);
+	playerStats.totalGold5Earned += Math.floor(playerStats.gold5Earned * playerStats.gps_multi);
+	playerStats.totalGold6Earned += Math.floor(playerStats.gold6Earned * playerStats.gps_multi);
+	playerStats.totalGold7Earned += Math.floor(playerStats.gold7Earned * playerStats.gps_multi);
+	
+	playerStats.totalCat1Earned += Math.floor(playerStats.cat1Earned * playerStats.cps_multi);
+	
 //	playerStats.totalGold8Earned += playerStats.gold8Earned;
 	playerStats.gold += Number(playerStats.gps);
 	playerStats.totalGoldEarned += Number(playerStats.gps);
+	
+	playerStats.cat += Number(playerStats.cps);
+	playerStats.totalCatEarned += Number(playerStats.cps);
 }
 
 function updateGainsThisTick(){
-	playerStats.gps = 0;
-	playerStats.gps_multi = 1;
+	playerStats.gps = playerStats.cps = 0;
+	playerStats.gps_multi = playerStats.cps_multi = 1;
+	
+	playerStats.gps_multi = 10;
+	
 	playerStats.gold1Earned = playerStats.gold2Earned = playerStats.gold3Earned = 
 	playerStats.gold4Earned = playerStats.gold5Earned = playerStats.gold6Earned = 
-	playerStats.gold7Earned = playerStats.gold8Earned = 0;
+	playerStats.gold7Earned = playerStats.gold8Earned = playerStats.gold9Earned = 
+	playerStats.cat1Earned = 0;
 	cardHolder.forEach(updateFunction);
 	function updateFunction(index){
 		var effect = index.effect;
@@ -127,18 +159,23 @@ function updateGainsThisTick(){
 		}
 	}
 	playerStats.cardsOwned = getCardCount();
+	playerStats.cat_multi = getCatMulti();
+}
+function getCatMulti(x){
+	var retVal = 1;
+	var retVal2 = 1;
+	var cats = Number(playerStats.cat);
+	if(cats > 0){
+		retVal = Math.floor((1+(Math.log10(cats)/10))*1000)/1000;
+	//	retVal = Math.floor(1+Math.pow(cats,0.6)*Math.pow((Math.log10(cats)),1.2))/1000;
+	}
+	return retVal;
 }
 function applyGoldBucket(v, ugl){
-	switch(ugl){
-		case(1):playerStats.gold1Earned += v; break;
-		case(2):playerStats.gold2Earned += v; break;
-		case(3):playerStats.gold3Earned += v; break;
-		case(4):playerStats.gold4Earned += v; break;
-		case(5):playerStats.gold5Earned += v; break;
-		case(6):playerStats.gold6Earned += v; break;
-		case(7):playerStats.gold7Earned += v; break;
-		case(8):playerStats.gold8Earned += v; break;
-	}
+	playerStats["gold"+ugl+"Earned"] += v;
+}
+function applyCatBucket(v, ugl){
+	playerStats["cat"+(ugl-9)+"Earned"] += v;
 }
 function applyEffect(effect, amt, ugl){
 	var effList = effect.split("-");
@@ -369,6 +406,16 @@ function applyEffect(effect, amt, ugl){
 				playerStats.gps += goldVal;
 				applyGoldBucket(goldVal, ugl);
 			break;
+			case("ygold"):
+				var totalIncrease = Math.pow((1+effList2[1]),amt);
+				playerStats.gps_multi *= totalIncrease
+				applyGoldBucket(((totalIncrease-1)*100), ugl);
+			break;
+			case("cat"):
+				effList2[1] *= amt; 
+				playerStats.cps += Number(effList2[1]); 
+				applyCatBucket(Number(effList2[1]), ugl);
+			break;
 		}
 	}
 }
@@ -396,17 +443,48 @@ function getLuckPercent(percent){
 }
 
 function showGoldBuildings(){
-	for(var x = 0; x < 8; x++){
+	for(var x = 0; x < 9; x++){
 		var c = getHighestRarityOfLine(x+1);
 		if(typeof c !== 'undefined'){
+			$('#gold'+x).show();
+			$('#gold'+x+"TT").html(getBuildingTooltip(x+1));
 			$('#gold'+x+'BuildingName').text(c.name);
 			$('#gold'+x+'BuildingOwned').text(formatNumber(getCardAmt(c.id)));
-			if(x != 7){
-				$('#gold'+x+'BuildingEarned').text(formatNumber(playerStats["gold"+(x+1)+"Earned"]));
+			if(x != 7 && x != 8){
+				$('#gold'+x+'BuildingEarned').text(formatNumber(playerStats["gold"+(x+1)+"Earned"] * playerStats.gps_multi));
 			}
 			else{
 				$('#gold'+x+'BuildingEarned').text(formatNumber(playerStats["gold"+(x+1)+"Earned"])+"%");
 			}
+		}
+	}
+}
+function getBuildingTooltip(ugl){
+	var retVal = "";
+	var cardList = getAllOfLine(ugl);
+	if(cardList.length > 1){
+		for(var x=cardList.length-1; x >= 0; x--){
+			if(x == cardList.length-1){
+				retVal += cardList[x].name+" <span style='right:50px;position:absolute'>x"+getCardAmt(cardList[x].id)+"</span><hr class='black'>"+cardList[x].description+"<hr class='black'>";
+			}
+			else{
+				retVal += "<br>"+cardList[x].name+" <span style='right:50px;position:absolute'>x"+getCardAmt(cardList[x].id)+"</span>";
+			}
+		}
+	}
+	else{
+		retVal = cardList[0].name+" <span style='right:50px;position:absolute'>x"+getCardAmt(cardList[0].id)+"</span><hr class='black'>"+cardList[0].description;
+	}
+	return retVal;
+}
+
+function showCatBuildings(){
+	for(var x = 0; x < 9; x++){
+		var c = getHighestRarityOfLine(x+10);
+		if(typeof c !== 'undefined'){
+			$('#cat'+x+'BuildingName').text(c.name);
+			$('#cat'+x+'BuildingOwned').text(formatNumber(getCardAmt(c.id)));
+				$('#cat'+x+'BuildingEarned').text(formatNumber(playerStats["cat"+(x+1)+"Earned"] * playerStats.cps_multi));
 		}
 	}
 }
@@ -424,6 +502,17 @@ function getHighestRarityOfLine(ugl){
 		return 0;
 	});
 	return cardList[0];
+}
+function getAllOfLine(ugl){
+	var cardList = cardHolder.slice();
+	cardList = cardList.filter(card => card.upgradeLine == ugl);
+	cardList.sort(function(a,b){
+		if(a.rarity > b.rarity){
+			return 1;
+		}
+		return -1;
+	});
+	return cardList;
 }
 
 function buyPacks(){
@@ -495,7 +584,18 @@ function totalPackCost(n){
 	return retVal;
 }
 function nPackCost(n){
-	return Math.floor((100 * (1+n) * Math.pow(playerStats.packMulti, n)));
+	var packVal = n;
+	if(packVal <= 2){
+		packVal = 1;
+	}
+	if(packVal > 2 && packVal <= 8){
+		packVal = (packVal/3);
+	}
+	if(packVal > 8 && packVal <= 14){
+		packVal = (packVal/2);
+	}
+	
+	return Math.floor((100 * (packVal)) * Math.pow(playerStats.packMulti, n));
 }
 
 function onePackCost(){
@@ -552,6 +652,14 @@ function doRangeLuck(lower, upper, type){
 		
 	}
 	return retVal;
+}
+function changeMenu(x){
+	hideAllMenu();
+	$('#'+x+'Producers').show();
+}
+function hideAllMenu(){
+	$('#catProducers').hide();
+	$('#goldProducers').hide();
 }
 function formatNumber(x){
 	var retVal = x;
