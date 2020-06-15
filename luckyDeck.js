@@ -448,6 +448,7 @@ function showGoldBuildings(){
 		if(typeof c !== 'undefined'){
 			$('#gold'+x).show();
 			$('#gold'+x+"TT").html(getBuildingTooltip(x+1));
+			$('#gold'+x+"MergeTT").html(getMergeTooltip(x+1));
 			$('#gold'+x+'BuildingName').text(c.name);
 			$('#gold'+x+'BuildingOwned').text(formatNumber(getCardAmt(c.id)));
 			if(x != 7 && x != 8){
@@ -459,6 +460,44 @@ function showGoldBuildings(){
 		}
 	}
 }
+
+function getMergeTooltip(ugl){
+	var retVal = " Merge your lower quality cards into higher quality cards. Merge rate is: 3:1, 4:1, 5:1, etc... for each higher tier<br>You must own at least 1 card of a rarity to merge into it.<br>";
+	var cardList = getAllOfLine(ugl);
+	var cost = getMergeCost(cardList);
+	retVal += "Merging all of your cards will <br>cost: "+formatNumber(cost)+" gold";
+	return retVal;
+}
+
+function getMergeCost(cardList){
+	var retVal = 0;
+	var prevCombin = 0;
+	for(var x = 0; x < cardList.length-1; x++){
+		var amt = getCardAmt(cardList[x].id) + prevCombin;
+		var rr = cardList[x].rarity;
+		var combins = Math.floor(amt/(rr+2));
+		prevCombin = combins;
+		retVal += Math.floor(combins * Math.pow((rr+2), 2.5)*(Math.pow(rr+1,2))*(rr/2))*1000;
+	}
+	return retVal;
+}
+
+function mergeCards(ugl){
+	var cardList = getAllOfLine(ugl);
+	var cost = getMergeCost(cardList);
+	if(playerStats.gold >= cost){
+		playerStats.gold -= cost;
+		for(var x = 0; x < cardList.length-1; x++){
+			var amt = getCardAmt(cardList[x].id);
+			var rr = cardList[x].rarity;
+			var id = cardList[x].id;
+			var combins = Math.floor(amt/(rr+2));
+			cardHolderAmt[id] -= (combins * (rr+2));
+			cardHolderAmt[cardList[x+1].id] += combins;
+		}
+	}
+}
+
 function getBuildingTooltip(ugl){
 	var retVal = "";
 	var cardList = getAllOfLine(ugl);
@@ -482,6 +521,7 @@ function showCatBuildings(){
 	for(var x = 0; x < 9; x++){
 		var c = getHighestRarityOfLine(x+10);
 		if(typeof c !== 'undefined'){
+			$('#cat'+x).show();
 			$('#cat'+x+'BuildingName').text(c.name);
 			$('#cat'+x+'BuildingOwned').text(formatNumber(getCardAmt(c.id)));
 				$('#cat'+x+'BuildingEarned').text(formatNumber(playerStats["cat"+(x+1)+"Earned"] * playerStats.cps_multi));
