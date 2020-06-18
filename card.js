@@ -17,7 +17,9 @@ function createRandomCard(spec){
 			if(cardNum == 0 && playerStats.goldUpgrades[10] == 0){
 				cardNum = 1;
 			}
-			if(cardNum > 5){
+			if((cardNum > 1 && cardNum < 5) && playerStats.catUpgrades[0] == 0)
+				cardNum = 1;
+			if(cardNum > 8 && playerStats.goldUpgrades[12] == 0){
 				cardNum -= 4;
 			}
 		}
@@ -29,9 +31,12 @@ function createRandomCard(spec){
 			var c = new card(commonCards[0]);
 		if(spec == 2)
 			var c = new card(uncommonCards[1]);
+		if(spec == 3)
+			var c = new card(uncommonCards[Math.floor(Math.random() * (4)+1)]);
 		addCards(c, 1);
 	}
-	
+	playerStats.cardsOwned = getCardCount();
+	playerStats.cardsOwnedTotal = getCardCount();
 	
 }
 function card(card){
@@ -74,7 +79,7 @@ function getRandomRarity(){
 	var pass = true;
 	if(playerStats.goldUpgrades[11] == 1){
 		while(pass){
-			if(doLuck(playerStats.upgradeChance)){
+			if(doLuck(playerStats.upgradeChance+(playerStats.catUpgrades[3]*5))){
 				retVal++
 				pass = false;
 			}
@@ -93,6 +98,38 @@ function getCardAmt(id){
 	var retVal = 0;
 	if(id in cardHolderAmt){
 		retVal = cardHolderAmt[id];
+	}
+	return retVal;
+}
+
+function getHighestRarityOfLine(ugl){
+	var cardList = cardHolder.slice();
+	cardList = cardList.filter(card => card.upgradeLine == ugl);
+	cardList.sort(function(a,b){
+		if(a.rarity > b.rarity){
+			return -1;
+		}
+		if( a.rarity < b.rarity){
+			return 1;
+		}
+		return 0;
+	});
+	return cardList[0];
+}
+function getCardAmtOfLine(ugl){
+	var retVal = 0;
+	var cl = cardHolder.slice();
+	cl = cl.filter(card => card.upgradeLine == ugl);
+	for(var key in cl){
+		retVal += getCardAmt(cl[key].id);
+	}
+	return retVal;
+}
+
+function hasCardOfLine(ugl){
+	var retVal = false;
+	if(cardHolder.some(e => e.upgradeLine == ugl)){
+		retVal = true;
 	}
 	return retVal;
 }

@@ -122,7 +122,7 @@
 		-webkit-user-select: none;
 		-moz-user-select: none;
 	}
-	.upgradeItem .tooltip, .upgradeItemBoughtHolder .tooltip, .buildingMerge .tooltip{
+	.upgradeItem .tooltip, .upgradeItemBoughtHolder .tooltip, .buildingMerge .tooltip, .eagleHolder .tooltip{
 		visibility:hidden;
 		position:absolute;
 		width:300px;
@@ -136,13 +136,13 @@
 		border-radius: 6px;
 		padding-top: 3px;
 		padding-bottom: 3px;
-		left:105%;
+		left:115%;
 		top:2px;
 		z-index: 1;
 		-webkit-user-select: none;
 		-moz-user-select: none;
 	}
-	.upgradeItem:hover .tooltip, .upgradeItemBoughtHolder:hover .tooltip, .tooltipHolder:hover .tooltip, .buildingMerge:hover .tooltip{
+	.upgradeItem:hover .tooltip, .upgradeItemBoughtHolder:hover .tooltip, .tooltipHolder:hover .tooltip, .buildingMerge:hover .tooltip, .eagleHolder:hover .tooltip{
 		visibility: visible;
 	}
 	
@@ -187,11 +187,22 @@
 	}
 	.menuSelector{
 		border:dotted 2px green;
-		position:relative;
-		display:inline-flex;
+		position:absolute;
 		width:50px;
 		height:100px;
+		margin-left:10px;
 		cursor:pointer;
+		z-index:1;
+	}
+	.menuGlow{
+		border:solid 1px red;
+		position:absolute;
+		width:50px;
+		margin-left:10px;
+		display:none;
+		height:100px;
+		z-index:0;
+		box-shadow:0px 0px 10px 10px #0ff;
 	}
 	.catMultiHolder{
 		border: dotted 1px red;
@@ -213,4 +224,7 @@
 	hr.black{
 		border: 1px solid black;
 	}
+	.eagleHolder{
+	}
+	
 	

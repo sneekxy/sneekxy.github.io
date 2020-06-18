@@ -12,12 +12,16 @@
 		Cards:
 		<span id="cardList">
 		</span>
-		<span id="catCurrencyHolder" style="position:absolute;left:150px;display:none;">
+		<span id="catCurrencyHolder" style="position:absolute;left:150px;display:none">
 		Cats: <span id="cats"></span>
 		</span>
 		<br>
 		Gold:
 		<span id="gold">
+		</span>
+		<span id="eagleHolder" class="eagleHolder" style="position:absolute;left:150px;display:none">
+		Eagles: <span id="eagle"></span>
+		<span id="eagleTT" class="tooltip" style="z-index:3">Eagles are attracted to gold and will steal a % of your gold earned each turn. The more gold you earn the more they will steal</span>
 		</span>
 		<div id="buyPackHolder" class="buyPackHolder">
 			<div id="buyPack" class="buyPack">
@@ -107,34 +111,40 @@
 		
 		<div id="catProducers" class="tabMenu" style="display:none">
 			<div id="cat0" class="buildingLine">
-				<span id="cat0BuildingName" class="buildingLineName"></span>
+				<span class="tooltipHolder"><span id="cat0BuildingName" class="buildingLineName"></span><span id="cat0TT" class="tooltip"></span></span>
 				<span id="cat0BuildingOwned" class="buildingLineAmount"></span>
 				<span id="cat0BuildingEarned" class="buildingLineEarned"></span>
+				<span id="cat0Merge" class="buildingMerge" onClick="mergeCards(10)">Merge Cards<span id="cat0MergeTT" class="tooltip"></span></span>
 			
 			</div>
 			
 			<div id="cat1" class="buildingLine">
-				<span id="cat1BuildingName" class="buildingLineName"></span>
+				<span class="tooltipHolder"><span id="cat1BuildingName" class="buildingLineName"></span><span id="cat1TT" class="tooltip"></span></span>
 				<span id="cat1BuildingOwned" class="buildingLineAmount"></span>
 				<span id="cat1BuildingEarned" class="buildingLineEarned"></span>
+				<span id="cat1Merge" class="buildingMerge" onClick="mergeCards(11)">Merge Cards<span id="cat1MergeTT" class="tooltip"></span></span>
+
 			</div>
 			
 			<div id="cat2" class="buildingLine">
-				<span id="cat2BuildingName" class="buildingLineName"></span>
+				<span class="tooltipHolder"><span id="cat2BuildingName" class="buildingLineName"></span><span id="cat2TT" class="tooltip"></span></span>
 				<span id="cat2BuildingOwned" class="buildingLineAmount"></span>
 				<span id="cat2BuildingEarned" class="buildingLineEarned"></span>
+				<span id="cat12Merge" class="buildingMerge" onClick="mergeCards(12)">Merge Cards<span id="cat2MergeTT" class="tooltip"></span></span>
 			</div>
 			
 			<div id="cat3" class="buildingLine">
-				<span id="cat3BuildingName" class="buildingLineName"></span>
+				<span class="tooltipHolder"><span id="cat3BuildingName" class="buildingLineName"></span><span id="cat3TT" class="tooltip"></span></span>
 				<span id="cat3BuildingOwned" class="buildingLineAmount"></span>
 				<span id="cat3BuildingEarned" class="buildingLineEarned"></span>
+				<span id="cat3Merge" class="buildingMerge" onClick="mergeCards(13)">Merge Cards<span id="cat3MergeTT" class="tooltip"></span></span>
 			</div>
 			
 			<div id="cat4" class="buildingLine">
-				<span id="cat4BuildingName" class="buildingLineName"></span>
+				<span class="tooltipHolder"><span id="cat4BuildingName" class="buildingLineName"></span><span id="cat4TT" class="tooltip"></span></span>
 				<span id="cat4BuildingOwned" class="buildingLineAmount"></span>
 				<span id="cat4BuildingEarned" class="buildingLineEarned"></span>
+				<span id="cat4Merge" class="buildingMerge" onClick="mergeCards(14)">Merge Cards<span id="cat4MergeTT" class="tooltip"></span></span>
 			</div>
 			<div id="cat5" class="buildingLine">
 				<span id="cat5BuildingName" class="buildingLineName"></span>
@@ -172,8 +182,14 @@
 		
 		
 		<div id="menuSelector" class="menuSelectorHolder">
-			<div id="goldMenuSelector" class="menuSelector" onclick="changeMenu('gold')";>Gold</div>
-			<div id="catMenuSelector" class="menuSelector" onclick="changeMenu('cat')">Cat</div>
+			<div id="goldMenuSelector" class="menuSelector" style="left:0px;" onclick="changeMenu('gold')";>Gold</div>
+			
+			<div id="catMenuSelector" class="menuSelector" style="left:65px;" onclick="changeMenu('cat')">Cat</div>
+			
+		</div>
+		<div id="menuSelectorGlow" class="menuSelectorHolder">
+		<div id="goldMenuGlow" style="left:0px;" class="menuGlow"></div>
+		<div id="catMenuGlow" style="left:65px;" class="menuGlow"></div>
 		</div>
 	</div>
 	</BODY>
