@@ -13,6 +13,11 @@ function populateUpgrades(){
 				var upgSt = gUpgrades[index];
 				upgSt = upgSt.split(";");
 				var costType = getCostType(upgSt[4]);
+				if(index == 21){
+					var te = upgSt[1];
+					te.replace("x",Math.floor(Math.random()*100));
+					upgSt[1] = te;
+				}
 				var st = "<div id='upgrade"+index+"' class='upgradeItem' style='background-image:url(\"art/gUpg"+index+".png\");' onClick='buyUpgrade("+upgSt[0]+","+upgSt[3]+",\""+upgSt[4]+"\")'>"
 				+"<span class='tooltip'>"+upgSt[1]+"<hr class='black'><br>"+upgSt[2]+"<br>Cost: "+formatNumber(Number(upgSt[3]))+" "+costType+"</span></div>";
 				var oldVal = $("#goldUpgrade").html();
@@ -75,6 +80,18 @@ function buyUpgrade(id, cost, costType){
 			if(id==0 || id==17){
 				backFillCards();
 			}
+			if(id==27){
+				playerStats.unlockCUpgrades[10] = 1;
+				playerStats.unlockGUpgrades[28] = 1;
+				showGlowMenu("cat");
+				showGlowMenu("gold");
+			}
+			if(id==28){
+				addCards(new card(uncommonCards[1]),2);
+				addCards(new card(uncommonCards[2]),2);
+				addCards(new card(uncommonCards[3]),2);
+				addCards(new card(uncommonCards[4]),2);
+			}
 			
 		}
 	}
@@ -89,6 +106,9 @@ function buyUpgrade(id, cost, costType){
 			}
 			if(id == 10){
 				backFillCards();
+			}
+			if(id == 12){
+				$('#gemCurrencyHolder').show();
 			}
 		}
 	}
@@ -107,7 +127,7 @@ function getCostType(s){
 var gUpgrades = [
 "0;Stacking Cards;Buying cards give an additional card (get a free card for every previous card purchase);300;g",
 "1;Inflation;Gold generated from all 'Coin' cards is doubled;800;g",
-"2;Weighted Face;Fliping coins have an extra 5% chance to have a positive outcome;1400;g",
+"2;Weighted Face;Fliping coins have an extra 10% chance to have a positive outcome;1400;g",
 "3;Two Random;When too random isn't enough you go to two! Too Random coins have an extra outcome;2000;g",
 "4;Better Mint;Increses the lower range of Counterfeit Coins based on the upper end;3300;g",
 "5;Expansion Pack;Unlocks more gold cards when you Buy.More.Cards.;4500;g",
@@ -126,6 +146,16 @@ var gUpgrades = [
 "17;Stealing;Buying cards will give another additional card!Shame on you (get a free card for every previous card purchase);400000;g",
 "18;More Gold;Buy more gold? Why didn't I think of that! Gives you 20% more gold each turn!;150000;g",
 
+"19;+1 Karat;All 'Coin' cards are 50% more effective;5000000;g",
+"20;Flip, flip, flip it up;The first time a Flip coin fails, it'll flip again!;5000000;g",
+"21;Your lucky number is: x;Too Random coins have 30% increased value;5000000;g",
+"22;Near Perfect copy;The upper end of Counterfeit coins is increased by 35%;5000000;g",
+"23;Lucky..trinkets;Lucky coins have 20% increased base value;5000000;g",
+"24;Division is hard;Duplications have 18% less reduction;5000000;g",
+"25;Psychic powers;Lottery tickets have +1 to their lower range;5000000;g",
+"26;Sales Tax;Tax collection get a small bonus based on total cards bought;5000000;g",
+"27;New Shades;Marty is .5% more effective;5000000;g",
+"28;Better RNG;Gives 2 of every cat card. Just in case you aren't lucky;25000000;g",
 ];
 var cUpgrades = [
 "0;Herd the Pack;Why stop at just cat food? Unlocks more cat producing cards!;1000;c",
@@ -139,4 +169,6 @@ var cUpgrades = [
 "8;Mechanical Knees; Cats can jump higher and deter Eagles better. Eagles are half as effective;100000;c",
 "9;Aerodynamics;Cats are less air-disabled and can fight off Eagles better. Eagles effectiveness is reduced by owned cats;1000000;c",
 "10;Cat Army;Buying cards will give ANOTHER additional card. And each time you buy 1 card is guarenteed to be an uncommon cat card!(get a free card for every previous card purchase);1000000;c",
+"11;Claw the Rate 2!;Cats are on an electric boogaloo and act as if you've bought 20% less cards;500000;c",
+"12;Scavenge;Cats will bring home gems. Maybe gems can be exchanged for some really nice stuff? or not only one way to find out;2000000;c",
 ];

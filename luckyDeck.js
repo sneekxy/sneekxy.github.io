@@ -12,19 +12,23 @@ var playerStats = {
 	cps_multi: 1,
 	gps: 0,
 	gps_multi: 1,
+	gems: 0,
+	geps: 0,
 	cardsOwned: 0,
 	cardsOwnedTotal: 0,
 	luck: 1,
 	gold1Earned: 0,
 	goldUpgrades: [0,0,0,0,0,0,0,0,0,0,
-				   0,0,0,0,0,0,0,0,0],
+				   0,0,0,0,0,0,0,0,0,0,
+				   0,0,0,0,0,0,0,0],
 	catUpgrades: [0,0,0,0,0,0,0,0,0,0,
-				  0],
+				  0,0,0],
 	unlockGUpgrades: [1,1,0,0,0,1,0,0,0,0,
-				      0,0,0,0,0,0,0,0,0],
+				      0,0,0,0,0,0,0,0,0,0,
+					  0,0,0,0,0,0,0,0],
 	unlockCUpgrades: [1,0,1,1,0,0,1,0,0,0,
-					  0],
-	unlockChecker:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17],
+					  0,0,0],
+	unlockChecker:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
 	buyAmount: 1,
 	packMulti: 1.03,
 	packsBought: 0,
@@ -66,7 +70,7 @@ function pageInit(){
 	endTime = Date.now() + 1000;
 	startGame();
 	createRandomCard(1);
-	//oneOfEvery();
+//	oneOfEvery();
 	populateUpgrades();
 	updateGameDisplay();
 }
@@ -83,7 +87,7 @@ function mainLoop(){
 function doTest(){
 var d = new Date();
 var ts = d.getTime();
-for(var z = 0; z < 1000000; z++){
+for(var z = 0; z < 100000; z++){
 
 mainLoop();
 
@@ -122,11 +126,17 @@ function updateGameDisplay(){
 		$('#catMultiAmt').text(formatNumber(playerStats.cat));
 		$('#catMultiVal').text(getCatMulti());
 	}
+	if(playerStats.catUpgrades[12] == 1){
+		$('#gems').text(formatNumber(playerStats.gems));
+	}
 	calculatePackCost();
 }
 function oneOfEvery(){
-	for(var x=2; x < 10; x++){
-		addCards(new card(uncommonCards[x]), 1);
+	for(var x=0; x < 8; x++){
+		addCards(new card(commonCards[x]), 10);
+	}
+	for(var x=5; x < 13; x++){
+		addCards(new card(uncommonCards[x]), 10);
 	}
 }
 function showStats(){
@@ -152,6 +162,26 @@ function calculateEagle(gs){
 		retVal = Math.round(Math.pow(.99,(effGS))*10000)/10000;
 	}
 	return retVal;
+}
+function getGems(){
+	var c = playerStats.cat/100000;
+	var gems = 0;
+	if(c > 50){
+		var cc = c/50;
+		for(var x=0; x<50; x++){
+			if(doLuck(1)){
+				gems += cc;
+			}
+		}
+	}
+	else{
+		for(var x=0; x < c; x++){
+			if(doLuck(1)){
+				gems++;
+			}
+		}
+	}
+	return Math.floor(gems);
 }
 
 function applyGainsThisTick(){
@@ -192,6 +222,7 @@ function applyGainsThisTick(){
 	
 	
 //	playerStats.totalGold8Earned += playerStats.gold8Earned;
+	console.log(playerStats.gps+" : "+playerStats.gold);
 	
 	playerStats.gold += Number(playerStats.gps);
 	playerStats.totalGoldEarned += Number(playerStats.gps);
@@ -199,10 +230,12 @@ function applyGainsThisTick(){
 	playerStats.cat += Number(playerStats.cps);
 	playerStats.totalCatEarned += Number(playerStats.cps);
 	playerStats.lastCatEarned = Number(playerStats.cps)-playerStats.cat4Earned;
+	
+	playerStats.gems += playerStats.geps;
 }
 
 function updateGainsThisTick(){
-	playerStats.turns++;
+	playerStats.turns += 1;
 	playerStats.gps = playerStats.cps = 0;
 	playerStats.gps_multi = playerStats.cps_multi = playerStats.luck = higherTax = 1;
 	
@@ -230,6 +263,7 @@ function updateGainsThisTick(){
 	}
 	playerStats.cardsOwned = getCardCount();
 	playerStats.cat_multi = getCatMulti();
+	playerStats.geps = getGems();
 }
 function getCatMulti(x){
 	var retVal = 1;
@@ -265,31 +299,46 @@ function applyEffect(effect, amt, ugl){
 	var effList = effect.split("-");
 	effList.forEach(effectFunction);
 	function effectFunction(index){
-		var effList2 = index.split(";");
+		var effList2 = index.split(";");0
 		switch(effList2[0]){
 			case("gold"): 
 				effList2[1] *= amt; 
 				effList2[1] = effList2[1] * (playerStats.goldUpgrades[1]+1);
+				effList2[1] = effList2[1] + (effList2[1] * playerStats.goldUpgrades[19]*.5);
 				applyGoldBucket(Number(effList2[1]), ugl); break;
 				
 			case("cgold"): 
 				var goldVal = 0;
 				if(amt < 50){
-					var perc = Number(effList2[2]) + (playerStats.goldUpgrades[2]*5);
+					var perc = Number(effList2[2]) + (playerStats.goldUpgrades[2]*10);
 
 					var goldAmt = Number(effList2[1]);
 					for(var x = 0; x < amt; x++){
 						if(doLuck(perc)){
 							goldVal += goldAmt;
 						}
+						else{
+							if(playerStats.goldUpgrades[20] == 1){
+								if(doLuck(perc)){
+									goldVal += goldAmt;
+								}
+							}
+						}
 					}
 				}
 				else{
 					var scalVal = Number(effList2[1] * amt/50);
-					var perc = Number(effList2[2]) + (playerStats.goldUpgrades[2]*5);
+					var perc = Number(effList2[2]) + (playerStats.goldUpgrades[2]*10);
 					for(var x = 0; x < 50; x++){
 						if(doLuck(perc)){
 							goldVal += scalVal;
+						}
+						else{
+							if(playerStats.goldUpgrades[20] == 1){
+								if(doLuck(perc)){
+									goldVal += scalVal;
+								}
+							}
 						}
 					}
 				}
@@ -333,12 +382,15 @@ function applyEffect(effect, amt, ugl){
 						goldVal += (doRangeLuck(lowerVal, upperVal, true) * amt/50);
 					}
 				}
+				if(playerStats.goldUpgrades[21] == 1){
+					goldVal *= 1.3;
+				}
 				goldVal = Math.floor(goldVal);
 				applyGoldBucket(goldVal, ugl); break;
 			case("rgold"):
 				var goldVal = 0;
 				if(amt < 50){
-					var highVal = Number(effList2[2]);
+					var highVal = Number(effList2[2]) + (playerStats.goldUpgrades[22] * .35 * Number(effList2[2]));
 					var lowVal = Math.floor(Number(effList2[1]) + (playerStats.goldUpgrades[4]*(highVal/3)));
 
 					for(var x = 0; x < amt; x++){
@@ -346,7 +398,7 @@ function applyEffect(effect, amt, ugl){
 					}
 				}
 				else{
-					var highVal = Number(effList2[2]);
+					var highVal = Number(effList2[2]) + (playerStats.goldUpgrades[22] * .35 * Number(effList2[2]));
 					var lowVal = Math.floor(Number(effList2[1]) + (playerStats.goldUpgrades[4]*(highVal/3)));
 					for(var x = 0; x < 50; x++){
 						goldVal += (doRangeLuck(lowVal, highVal, true) * amt/50);
@@ -359,6 +411,7 @@ function applyEffect(effect, amt, ugl){
 				if(amt < 50){
 					var perc = Number(effList2[2]);
 					var reduc = Number(effList2[3]);
+					reduc = reduc - (reduc * playerStats.goldUpgrades[24] * .18);
 					var baseVal = Number(effList2[1]);
 					for(var x = 0; x < amt; x++){
 						var keepGoing = true;
@@ -379,6 +432,7 @@ function applyEffect(effect, amt, ugl){
 				else{
 					var perc = Number(effList2[2]);
 					var reduc = Number(effList2[3]);
+					reduc = reduc - (reduc * playerStats.goldUpgrades[24] * .18);
 					var baseVal = Number(effList2[1] * amt/50);
 					for(var x = 0; x < 50; x++){
 						var keepGoing = true;
@@ -401,6 +455,9 @@ function applyEffect(effect, amt, ugl){
 			case("tgold"):
 				var baseIncrease = 1 + Math.floor(Number(effList2[1])+(playerStats.goldUpgrades[9]*1.5) * Math.log10((1.3+(playerStats.goldUpgrades[9]*2)) * playerStats.cardsOwned)*100)/10000;
 				var totalIncrease = Math.floor(baseIncrease * (1+(((1-Math.pow(effList2[2],amt))/(1-effList2[2])))/10)*100)/100;
+				if(playerStats.goldUpgrades[26] == 1){
+					totalIncrease *= (1+playerStats.packsBought/2000);
+				}
 				if(totalIncrease > higherTax){
 					higherTax = totalIncrease;
 				}
@@ -418,7 +475,7 @@ function applyEffect(effect, amt, ugl){
 						for(var x = 0; x < luckRoll; x++){
 							var numHolder = [];
 							for(var y = 0; y < lines; y++){
-								numHolder.push(doRangeLuck(1, upper, true));
+								numHolder.push(doRangeLuck(1+(playerStats.goldUpgrades[25]), upper, true));
 							}
 							var highNum = calcLottery(numHolder);
 							if(highNum > highValue){
@@ -438,7 +495,7 @@ function applyEffect(effect, amt, ugl){
 						for(var x = 0; x < luckRoll; x++){
 							var numHolder = [];
 							for(var y = 0; y < lines; y++){
-								numHolder.push(doRangeLuck(1, upper, true));
+								numHolder.push(doRangeLuck(1+(playerStats.goldUpgrades[25]), upper, true));
 							}
 							var highNum = calcLottery(numHolder);
 							if(highNum > highValue){
@@ -480,12 +537,13 @@ function applyEffect(effect, amt, ugl){
 						goldVal += (totGold * amt/50);
 					}
 				}
+				goldVal = goldVal + (goldVal * .2 * playerStats.goldUpgrades[23]);
 				goldVal = Math.floor(goldVal);
 					
 				applyGoldBucket(goldVal, ugl);
 			break;
 			case("ygold"):
-				var totalIncrease = Math.pow((1+effList2[1]),amt);
+				var totalIncrease = Math.pow((1+Number(effList2[1])+(playerStats.goldUpgrades[27]*.005)),amt);
 				playerStats.gps_multi *= totalIncrease
 				applyGoldBucket(((totalIncrease-1)*100), ugl, 1);
 			break;
@@ -804,6 +862,9 @@ function nPackCost(n){
 	if(playerStats.catUpgrades[7] == 1){
 		n = Math.floor(n*.9);
 	}
+	if(playerStats.catUpgrades[11] == 1){
+		n = Math.floor(n*.8);
+	}
 	var retVal = Math.floor(baseCost*(packVal))*(Math.pow((cardMult/1.015),n));
 	if(n >= 100)
 		retVal = Math.floor((baseCost * (packVal)) * Math.pow(cardMult, n));
@@ -870,9 +931,16 @@ function checkUpgrades(){
 			case(12): if(hasCardOfLine(9)){ playerStats.unlockCUpgrades[1] = 1; catU+=1;playerStats.unlockChecker.splice(x,1);} break;
 			case(13): if(playerStats.cardsOwnedTotal >= 200){ playerStats.unlockCUpgrades[7] = 1; catU+=1;playerStats.unlockChecker.splice(x,1);}break;
 			case(14): if(playerStats.totalGoldEarned >= 1000000){ playerStats.unlockGUpgrades[18] = 1; goldU+=1;playerStats.unlockChecker.splice(x,1);}break;
-			case(15): if(playerStats.eagle <= .5){playerStats.unlockCUpgrades[8] = 1; catU+=1;playerStats.unlockChecker.splice(x,1);} break;
-			case(16): if(playerStats.totalGoldEarned >= 100000000){ playerStats.unlockCUpgrades[9] = 1; catU+=1;playerStats.unlockChecker.splice(x,1);}break;
+			case(15): if(playerStats.eagle <= .5){playerStats.unlockCUpgrades[9] = 1; catU+=1;playerStats.unlockChecker.splice(x,1);} break;
+			case(16): if(playerStats.totalGoldEarned >= 100000000){ playerStats.unlockCUpgrades[8] = 1; catU+=1;playerStats.unlockChecker.splice(x,1);}break;
 			case(17): if(playerStats.cat >= 1000000){ playerStats.unlockCUpgrades[10] = 1; catU+=1; playerStats.unlockChecker.splice(x,1);} break;
+			case(18): if(playerStats.cat >= 200000){ 
+				for(var y = 19; y< 28;y ++){
+				playerStats.unlockGUpgrades[y] = 1;
+			} goldU+=1; playerStats.unlockChecker.splice(x,1);}break;
+			case(19): if(playerStats.cardsOwned >= 1000){playerStats.unlockCUpgrades[12] = 1; catU+=1; playerStats.unlockChecker.splice(x,1);} break;
+			case(20): if(playerStats.totalCatEarned >= 2000000){playerStats.unlockCUpgrades[11] = 1; catU+=1; playerStats.unlockChecker.splice(x,1);} break;
+			
 		}
 		
 
