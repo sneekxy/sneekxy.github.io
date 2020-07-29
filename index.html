@@ -1,0 +1,284 @@
+<HTML>
+	<TITLE>Lucky Deck</TITLE>
+	<HEAD>
+	<meta http-equiv='cache-control' content='no-cache'>
+	<meta http-equiv='expires' content='0'>
+	<meta http-equiv='pragma' content='no-cache'>
+	<link rel="stylesheet" type="text/css" href="lucky.css">
+
+	</HEAD>
+	<BODY class="gameBody" onload="pageInit()">
+	<div id="wholeDocument">
+		Cards:
+		<span id="cardList">
+		</span>
+		<span id="catCurrencyHolder" style="position:absolute;left:150px;display:none">
+		Cats: <span id="cats"></span>
+		</span>
+		<span id="gemCurrencyHolder" class="gemCurrencyHolder" style="position:absolute;left:300px;display:none">
+		Gems: <span id="gems"></span>
+		<span id="gemTT" class="tooltip" style="z-index:3"></span>
+		</span>
+		<br>
+		Gold:
+		<span id="gold">
+		</span>
+		<span id="eagleHolder" class="eagleHolder" style="position:absolute;left:150px;display:none">
+		Eagles: <span id="eagle"></span>
+		<span id="eagleTT" class="tooltip" style="z-index:3">Eagles are attracted to gold and will steal a % of your gold earned each turn. The more gold you earn the more they will steal</span>
+		</span>
+		<div id="buyPackHolder" class="buyPackHolder">
+			<div id="buyPack" class="buyPack">
+				<span id="buyPackButton" class="buyPackButton" onClick="buyPacks()">Buy More Cards</span>
+				<span id="buyAmount" class="buyAmount" onClick="changeBuyAmount()">x1</span>
+				<span id="packCost" class="packCost">Cost 100 gold</span>
+			</div>
+		</div>
+		
+		<div id="goldProducers" class="tabMenu" >
+			<div id="gold0" class="buildingLine">
+				<span class="tooltipHolder"><span id="gold0BuildingName" class="buildingLineName"></span><span id="gold0TT" class="tooltip"></span></span>
+				<span id="gold0BuildingOwned" class="buildingLineAmount"></span>
+				<span id="gold0BuildingEarned" class="buildingLineEarned"></span>
+				<span id="gold0Merge" class="buildingMerge" onClick="mergeCards(1)">Merge Cards<span id="gold0MergeTT" class="tooltip"></span></span>
+				
+			</div>
+			
+			<div id="gold1" class="buildingLine">
+				<span class="tooltipHolder"><span id="gold1BuildingName" class="buildingLineName"></span><span id="gold1TT" class="tooltip"></span></span>
+				<span id="gold1BuildingOwned" class="buildingLineAmount"></span>
+				<span id="gold1BuildingEarned" class="buildingLineEarned"></span>
+				<span id="gold1Merge" class="buildingMerge" onClick="mergeCards(2)">Merge Cards<span id="gold1MergeTT" class="tooltip"></span></span>
+				
+			</div>
+			
+			<div id="gold2" class="buildingLine">
+				<span class="tooltipHolder"><span id="gold2BuildingName" class="buildingLineName"></span><span id="gold2TT" class="tooltip"></span></span>
+				<span id="gold2BuildingOwned" class="buildingLineAmount"></span>
+				<span id="gold2BuildingEarned" class="buildingLineEarned"></span>
+				<span id="gold2Merge" class="buildingMerge" onClick="mergeCards(3)">Merge Cards<span id="gold2MergeTT" class="tooltip"></span></span>
+				
+			</div>
+			
+			<div id="gold3" class="buildingLine">
+				<span class="tooltipHolder"><span id="gold3BuildingName" class="buildingLineName"></span><span id="gold3TT" class="tooltip"></span></span>
+				<span id="gold3BuildingOwned" class="buildingLineAmount"></span>
+				<span id="gold3BuildingEarned" class="buildingLineEarned"></span>
+				<span id="gold3Merge" class="buildingMerge" onClick="mergeCards(4)">Merge Cards<span id="gold3MergeTT" class="tooltip"></span></span>
+				
+			</div>
+			
+			<div id="gold4" class="buildingLine">
+				<span class="tooltipHolder"><span id="gold4BuildingName" class="buildingLineName"></span><span id="gold4TT" class="tooltip"></span></span>
+				<span id="gold4BuildingOwned" class="buildingLineAmount"></span>
+				<span id="gold4BuildingEarned" class="buildingLineEarned"></span>
+				<span id="gold4Merge" class="buildingMerge" onClick="mergeCards(5)">Merge Cards<span id="gold4MergeTT" class="tooltip"></span></span>
+				
+			</div>
+			<div id="gold5" class="buildingLine">
+				<span class="tooltipHolder"><span id="gold5BuildingName" class="buildingLineName"></span><span id="gold5TT" class="tooltip"></span></span>
+				<span id="gold5BuildingOwned" class="buildingLineAmount"></span>
+				<span id="gold5BuildingEarned" class="buildingLineEarned"></span>
+				<span id="gold5Merge" class="buildingMerge" onClick="mergeCards(6)">Merge Cards<span id="gold5MergeTT" class="tooltip"></span></span>
+				
+			</div>
+			
+			<div id="gold6" class="buildingLine">
+				<span class="tooltipHolder"><span id="gold6BuildingName" class="buildingLineName"></span><span id="gold6TT" class="tooltip"></span></span>
+				<span id="gold6BuildingOwned" class="buildingLineAmount"></span>
+				<span id="gold6BuildingEarned" class="buildingLineEarned"></span>
+				<span id="gold6Merge" class="buildingMerge" onClick="mergeCards(7)">Merge Cards<span id="gold6MergeTT" class="tooltip"></span></span>
+				
+			</div>
+			
+			<div id="gold7" class="buildingLine">
+				<span class="tooltipHolder"><span id="gold7BuildingName" class="buildingLineName"></span><span id="gold7TT" class="tooltip"></span></span>
+				<span id="gold7BuildingOwned" class="buildingLineAmount"></span>
+				<span id="gold7BuildingEarned" class="buildingLineEarned"></span>
+				<span id="gold7Merge" class="buildingMerge" onClick="mergeCards(8)">Merge Cards<span id="gold7MergeTT" class="tooltip"></span></span>
+				
+			</div>
+			
+			<div id="gold8" class="buildingLine">
+				<span class="tooltipHolder"><span id="gold8BuildingName" class="buildingLineName"></span><span id="gold8TT" class="tooltip"></span></span>
+				<span id="gold8BuildingOwned" class="buildingLineAmount"></span>
+				<span id="gold8BuildingEarned" class="buildingLineEarned"></span>
+				<span id="gold8Merge" class="buildingMerge" onClick="mergeCards(9)">Merge Cards<span id="gold8MergeTT" class="tooltip"></span></span>
+				
+			</div>
+
+			<span id="goldUpgrade" class="upgradeHolder">
+			</span>
+			<span id="goldUpgradeBought" class="upgradeHolderBought">
+			</span>
+		</div>
+		
+		<div id="catProducers" class="tabMenu" style="display:none">
+			<div id="cat0" class="buildingLine">
+				<span class="tooltipHolder"><span id="cat0BuildingName" class="buildingLineName"></span><span id="cat0TT" class="tooltip"></span></span>
+				<span id="cat0BuildingOwned" class="buildingLineAmount"></span>
+				<span id="cat0BuildingEarned" class="buildingLineEarned"></span>
+				<span id="cat0Merge" class="buildingMerge" onClick="mergeCards(10)">Merge Cards<span id="cat0MergeTT" class="tooltip"></span></span>
+			
+			</div>
+			
+			<div id="cat1" class="buildingLine">
+				<span class="tooltipHolder"><span id="cat1BuildingName" class="buildingLineName"></span><span id="cat1TT" class="tooltip"></span></span>
+				<span id="cat1BuildingOwned" class="buildingLineAmount"></span>
+				<span id="cat1BuildingEarned" class="buildingLineEarned"></span>
+				<span id="cat1Merge" class="buildingMerge" onClick="mergeCards(11)">Merge Cards<span id="cat1MergeTT" class="tooltip"></span></span>
+
+			</div>
+			
+			<div id="cat2" class="buildingLine">
+				<span class="tooltipHolder"><span id="cat2BuildingName" class="buildingLineName"></span><span id="cat2TT" class="tooltip"></span></span>
+				<span id="cat2BuildingOwned" class="buildingLineAmount"></span>
+				<span id="cat2BuildingEarned" class="buildingLineEarned"></span>
+				<span id="cat12Merge" class="buildingMerge" onClick="mergeCards(12)">Merge Cards<span id="cat2MergeTT" class="tooltip"></span></span>
+			</div>
+			
+			<div id="cat3" class="buildingLine">
+				<span class="tooltipHolder"><span id="cat3BuildingName" class="buildingLineName"></span><span id="cat3TT" class="tooltip"></span></span>
+				<span id="cat3BuildingOwned" class="buildingLineAmount"></span>
+				<span id="cat3BuildingEarned" class="buildingLineEarned"></span>
+				<span id="cat3Merge" class="buildingMerge" onClick="mergeCards(13)">Merge Cards<span id="cat3MergeTT" class="tooltip"></span></span>
+			</div>
+			
+			<div id="cat4" class="buildingLine">
+				<span class="tooltipHolder"><span id="cat4BuildingName" class="buildingLineName"></span><span id="cat4TT" class="tooltip"></span></span>
+				<span id="cat4BuildingOwned" class="buildingLineAmount"></span>
+				<span id="cat4BuildingEarned" class="buildingLineEarned"></span>
+				<span id="cat4Merge" class="buildingMerge" onClick="mergeCards(14)">Merge Cards<span id="cat4MergeTT" class="tooltip"></span></span>
+			</div>
+			<div id="cat5" class="buildingLine">
+				<span class="tooltipHolder"><span id="cat5BuildingName" class="buildingLineName"></span><span id="cat5TT" class="tooltip"></span></span>
+				<span id="cat5BuildingOwned" class="buildingLineAmount"></span>
+				<span id="cat5BuildingEarned" class="buildingLineEarned"></span>
+				<span id="cat5Merge" class="buildingMerge" onClick="mergeCards(15)">Merge Cards<span id="cat5MergeTT" class="tooltip"></span></span>
+			</div>
+			
+			<div id="cat6" class="buildingLine">
+				<span class="tooltipHolder"><span id="cat6BuildingName" class="buildingLineName"></span><span id="cat6TT" class="tooltip"></span></span>
+				<span id="cat6BuildingOwned" class="buildingLineAmount"></span>
+				<span id="cat6BuildingEarned" class="buildingLineEarned"></span>
+				<span id="cat6Merge" class="buildingMerge" onClick="mergeCards(16)">Merge Cards<span id="cat6MergeTT" class="tooltip"></span></span>
+			</div>
+			
+			<div id="cat7" class="buildingLine">
+				<span id="cat7BuildingName" class="buildingLineName"></span>
+				<span id="cat7BuildingOwned" class="buildingLineAmount"></span>
+				<span id="cat7BuildingEarned" class="buildingLineEarned"></span>
+			</div>
+			
+			<div id="cat8" class="buildingLine">
+				<span id="cat8BuildingName" class="buildingLineName"></span>
+				<span id="cat8BuildingOwned" class="buildingLineAmount"></span>
+				<span id="cat8BuildingEarned" class="buildingLineEarned"></span>
+			</div>
+	
+			<div id="catMultiHolder" class="catMultiHolder">
+				You have <span id="catMultiAmt"></span> cats. Providing a <span id="catMultiVal"></span>x multiplier to gold.
+			</div>
+			
+			<span id="catUpgrade" class="upgradeHolder">
+			</span>
+			<span id="catUpgradeBought" class="upgradeHolderBought">
+			</span>
+		</div>
+		
+		<div id="gemProducers" class="tabMenu" style="display:none">
+			<div id="gem0" class="buildingLine">
+				<span class="tooltipHolder"><span id="gem0BuildingName" class="buildingLineName"></span><span id="gem0TT" class="tooltip"></span></span>
+				<span id="gem0BuildingOwned" class="buildingLineAmount"></span>
+				<span id="gem0BuildingEarned" class="buildingLineEarned"></span>
+			</div>
+			<div id="gem1" class="buildingLine">
+				<span class="tooltipHolder"><span id="gem1BuildingName" class="buildingLineName"></span><span id="gem1TT" class="tooltip"></span></span>
+				<span id="gem1BuildingOwned" class="buildingLineAmount"></span>
+				<span id="gem1BuildingEarned" class="buildingLineEarned"></span>
+			</div>
+			<div id="gem2" class="buildingLine">
+				<span class="tooltipHolder"><span id="gem2BuildingName" class="buildingLineName"></span><span id="gem2TT" class="tooltip"></span></span>
+				<span id="gem2BuildingOwned" class="buildingLineAmount"></span>
+				<span id="gem2BuildingEarned" class="buildingLineEarned"></span>
+			</div>
+			<div id="gem3" class="buildingLine">
+				<span class="tooltipHolder"><span id="gem3BuildingName" class="buildingLineName"></span><span id="gem3TT" class="tooltip"></span></span>
+				<span id="gem3BuildingOwned" class="buildingLineAmount"></span>
+				<span id="gem3BuildingEarned" class="buildingLineEarned"></span>
+			</div>
+			<div id="gem4" class="buildingLine">
+				<span class="tooltipHolder"><span id="gem4BuildingName" class="buildingLineName"></span><span id="gem4TT" class="tooltip"></span></span>
+				<span id="gem4BuildingOwned" class="buildingLineAmount"></span>
+				<span id="gem4BuildingEarned" class="buildingLineEarned"></span>
+			</div>
+			<div id="gem5" class="buildingLine">
+				<span class="tooltipHolder"><span id="gem5BuildingName" class="buildingLineName"></span><span id="gem5TT" class="tooltip"></span></span>
+				<span id="gem5BuildingOwned" class="buildingLineAmount"></span>
+				<span id="gem5BuildingEarned" class="buildingLineEarned"></span>
+			</div>
+			<div id="gem6" class="buildingLine">
+				<span class="tooltipHolder"><span id="gem6BuildingName" class="buildingLineName"></span><span id="gem6TT" class="tooltip"></span></span>
+				<span id="gem6BuildingOwned" class="buildingLineAmount"></span>
+				<span id="gem6BuildingEarned" class="buildingLineEarned"></span>
+			</div>
+			<div id="gem7" class="buildingLine">
+				<span class="tooltipHolder"><span id="gem7BuildingName" class="buildingLineName"></span><span id="gem7TT" class="tooltip"></span></span>
+				<span id="gem7BuildingOwned" class="buildingLineAmount"></span>
+				<span id="gem7BuildingEarned" class="buildingLineEarned"></span>
+			</div>
+			
+			<div id="buyGemHolder" class="gemBuyHolder" style="cursor:pointer" onclick="buyGemCard()">
+				Buy a gem card for <span id="gemCost"></span> Gems.
+			</div>
+			
+		</div>
+		
+		<div id="playerProducers" class="tabMenu" style="display:none">
+			<span id="playerEQBackground" class="playerEQBackground">
+			<div id="playerEQHolder" class="playerEQHolder">
+			<span id="playerHelmet" class="playerEQSlot" style="left:190; background-image:url('art/eq/helmet0.png');"></span>
+			<span id="playerSword" class="playerEQSlot" style="left:60;top:180;background-image:url('art/eq/sword0.png');"></span>
+			<span id="playerChest" class="playerEQSlot" style="left:240;top:160;background-image:url('art/eq/chest0.png');"></span>
+			<span id="playerShoulder" class="playerEQSlot" style="left:142;top:162;background-image:url('art/eq/shoulder0.png');"></span>
+			<span id="playerGlove" class="playerEQSlot" style="left:340;top:220;background-image:url('art/eq/glove0.png');"></span>
+			<span id="playerPants" class="playerEQSlot" style="left:130;top:270;background-image:url('art/eq/pants0.png');"></span>
+			<span id="playerBelt" class="playerEQSlot" style="left:240;top:250;background-image:url('art/eq/belt0.png');"></span>
+			<span id="playerBoot" class="playerEQSlot" style="left:100;top:350;background-image:url('art/eq/boot0.png');"></span>
+			<span id="playerTrinket" class="playerEQSlot" style="left:340;top:370;background-image:url('art/eq/trinket0.png');"></span>
+			
+			</div>
+			
+		</div>
+		
+		<div id="menuSelector" class="menuSelectorHolder">
+			<div id="goldMenuSelector" class="menuSelector" style="left:0px;" onclick="changeMenu('gold')";>Gold</div>
+			
+			<div id="catMenuSelector" class="menuSelector" style="left:65px;" onclick="changeMenu('cat')">Cat</div>
+			
+			<div id="gemMenuSelector" class="menuSelector" style="left:130px;" onclick="changeMenu('gem')">Gem</div>
+			
+	<!--		<div id="playerMenuSelector" class="menuSelector" style="left:195px;" onclick="changeMenu('player')">Player</div> -->
+			
+		</div>
+		<div id="menuSelectorGlow" class="menuSelectorHolder">
+		<div id="goldMenuGlow" style="left:0px;" class="menuGlow"></div>
+		<div id="catMenuGlow" style="left:65px;" class="menuGlow"></div>
+		<div id="gemMenuGlow" style="left:130px;" class="menuGlow"></div>
+		<div id="playerMenuGlow" style="left:195px;" class="menuGlow"></div>
+		</div>
+		<div id="reset" style="right:0;top:0;position:absolute;cursor:pointer"onclick="resetGame()">RESET GAME</div>
+	</div>
+	</BODY>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="card.js"></script>
+<script src="luckyDeck.js"></script>
+<script src="cardDB.js"></script>
+<script src="upgrades.js"></script>
+<script src="gems.js"></script>
+<script src="effects.js"></script>
+
+</HTML>
