@@ -15,8 +15,9 @@
 		<span id="catCurrencyHolder" style="position:absolute;left:150px;display:none">
 		Cats: <span id="cats"></span>
 		</span>
-		<span id="gemCurrencyHolder" style="position:absolute;left:300px;display:none">
+		<span id="gemCurrencyHolder" class="gemCurrencyHolder" style="position:absolute;left:300px;display:none">
 		Gems: <span id="gems"></span>
+		<span id="gemTT" class="tooltip" style="z-index:3"></span>
 		</span>
 		<br>
 		Gold:
@@ -150,15 +151,17 @@
 				<span id="cat4Merge" class="buildingMerge" onClick="mergeCards(14)">Merge Cards<span id="cat4MergeTT" class="tooltip"></span></span>
 			</div>
 			<div id="cat5" class="buildingLine">
-				<span id="cat5BuildingName" class="buildingLineName"></span>
+				<span class="tooltipHolder"><span id="cat5BuildingName" class="buildingLineName"></span><span id="cat5TT" class="tooltip"></span></span>
 				<span id="cat5BuildingOwned" class="buildingLineAmount"></span>
 				<span id="cat5BuildingEarned" class="buildingLineEarned"></span>
+				<span id="cat5Merge" class="buildingMerge" onClick="mergeCards(15)">Merge Cards<span id="cat5MergeTT" class="tooltip"></span></span>
 			</div>
 			
 			<div id="cat6" class="buildingLine">
-				<span id="cat6BuildingName" class="buildingLineName"></span>
+				<span class="tooltipHolder"><span id="cat6BuildingName" class="buildingLineName"></span><span id="cat6TT" class="tooltip"></span></span>
 				<span id="cat6BuildingOwned" class="buildingLineAmount"></span>
 				<span id="cat6BuildingEarned" class="buildingLineEarned"></span>
+				<span id="cat6Merge" class="buildingMerge" onClick="mergeCards(16)">Merge Cards<span id="cat6MergeTT" class="tooltip"></span></span>
 			</div>
 			
 			<div id="cat7" class="buildingLine">
@@ -183,17 +186,88 @@
 			</span>
 		</div>
 		
+		<div id="gemProducers" class="tabMenu" style="display:none">
+			<div id="gem0" class="buildingLine">
+				<span class="tooltipHolder"><span id="gem0BuildingName" class="buildingLineName"></span><span id="gem0TT" class="tooltip"></span></span>
+				<span id="gem0BuildingOwned" class="buildingLineAmount"></span>
+				<span id="gem0BuildingEarned" class="buildingLineEarned"></span>
+			</div>
+			<div id="gem1" class="buildingLine">
+				<span class="tooltipHolder"><span id="gem1BuildingName" class="buildingLineName"></span><span id="gem1TT" class="tooltip"></span></span>
+				<span id="gem1BuildingOwned" class="buildingLineAmount"></span>
+				<span id="gem1BuildingEarned" class="buildingLineEarned"></span>
+			</div>
+			<div id="gem2" class="buildingLine">
+				<span class="tooltipHolder"><span id="gem2BuildingName" class="buildingLineName"></span><span id="gem2TT" class="tooltip"></span></span>
+				<span id="gem2BuildingOwned" class="buildingLineAmount"></span>
+				<span id="gem2BuildingEarned" class="buildingLineEarned"></span>
+			</div>
+			<div id="gem3" class="buildingLine">
+				<span class="tooltipHolder"><span id="gem3BuildingName" class="buildingLineName"></span><span id="gem3TT" class="tooltip"></span></span>
+				<span id="gem3BuildingOwned" class="buildingLineAmount"></span>
+				<span id="gem3BuildingEarned" class="buildingLineEarned"></span>
+			</div>
+			<div id="gem4" class="buildingLine">
+				<span class="tooltipHolder"><span id="gem4BuildingName" class="buildingLineName"></span><span id="gem4TT" class="tooltip"></span></span>
+				<span id="gem4BuildingOwned" class="buildingLineAmount"></span>
+				<span id="gem4BuildingEarned" class="buildingLineEarned"></span>
+			</div>
+			<div id="gem5" class="buildingLine">
+				<span class="tooltipHolder"><span id="gem5BuildingName" class="buildingLineName"></span><span id="gem5TT" class="tooltip"></span></span>
+				<span id="gem5BuildingOwned" class="buildingLineAmount"></span>
+				<span id="gem5BuildingEarned" class="buildingLineEarned"></span>
+			</div>
+			<div id="gem6" class="buildingLine">
+				<span class="tooltipHolder"><span id="gem6BuildingName" class="buildingLineName"></span><span id="gem6TT" class="tooltip"></span></span>
+				<span id="gem6BuildingOwned" class="buildingLineAmount"></span>
+				<span id="gem6BuildingEarned" class="buildingLineEarned"></span>
+			</div>
+			<div id="gem7" class="buildingLine">
+				<span class="tooltipHolder"><span id="gem7BuildingName" class="buildingLineName"></span><span id="gem7TT" class="tooltip"></span></span>
+				<span id="gem7BuildingOwned" class="buildingLineAmount"></span>
+				<span id="gem7BuildingEarned" class="buildingLineEarned"></span>
+			</div>
+			
+			<div id="buyGemHolder" class="gemBuyHolder" style="cursor:pointer" onclick="buyGemCard()">
+				Buy a gem card for <span id="gemCost"></span> Gems.
+			</div>
+			
+		</div>
+		
+		<div id="playerProducers" class="tabMenu" style="display:none">
+			<span id="playerEQBackground" class="playerEQBackground">
+			<div id="playerEQHolder" class="playerEQHolder">
+			<span id="playerHelmet" class="playerEQSlot" style="left:190; background-image:url('art/eq/helmet0.png');"></span>
+			<span id="playerSword" class="playerEQSlot" style="left:60;top:180;background-image:url('art/eq/sword0.png');"></span>
+			<span id="playerChest" class="playerEQSlot" style="left:240;top:160;background-image:url('art/eq/chest0.png');"></span>
+			<span id="playerShoulder" class="playerEQSlot" style="left:142;top:162;background-image:url('art/eq/shoulder0.png');"></span>
+			<span id="playerGlove" class="playerEQSlot" style="left:340;top:220;background-image:url('art/eq/glove0.png');"></span>
+			<span id="playerPants" class="playerEQSlot" style="left:130;top:270;background-image:url('art/eq/pants0.png');"></span>
+			<span id="playerBelt" class="playerEQSlot" style="left:240;top:250;background-image:url('art/eq/belt0.png');"></span>
+			<span id="playerBoot" class="playerEQSlot" style="left:100;top:350;background-image:url('art/eq/boot0.png');"></span>
+			<span id="playerTrinket" class="playerEQSlot" style="left:340;top:370;background-image:url('art/eq/trinket0.png');"></span>
+			
+			</div>
+			
+		</div>
 		
 		<div id="menuSelector" class="menuSelectorHolder">
 			<div id="goldMenuSelector" class="menuSelector" style="left:0px;" onclick="changeMenu('gold')";>Gold</div>
 			
 			<div id="catMenuSelector" class="menuSelector" style="left:65px;" onclick="changeMenu('cat')">Cat</div>
 			
+			<div id="gemMenuSelector" class="menuSelector" style="left:130px;" onclick="changeMenu('gem')">Gem</div>
+			
+	<!--		<div id="playerMenuSelector" class="menuSelector" style="left:195px;" onclick="changeMenu('player')">Player</div> -->
+			
 		</div>
 		<div id="menuSelectorGlow" class="menuSelectorHolder">
 		<div id="goldMenuGlow" style="left:0px;" class="menuGlow"></div>
 		<div id="catMenuGlow" style="left:65px;" class="menuGlow"></div>
+		<div id="gemMenuGlow" style="left:130px;" class="menuGlow"></div>
+		<div id="playerMenuGlow" style="left:195px;" class="menuGlow"></div>
 		</div>
+		<div id="reset" style="right:0;top:0;position:absolute;cursor:pointer"onclick="resetGame()">RESET GAME</div>
 	</div>
 	</BODY>
 
@@ -204,5 +278,7 @@
 <script src="luckyDeck.js"></script>
 <script src="cardDB.js"></script>
 <script src="upgrades.js"></script>
+<script src="gems.js"></script>
+<script src="effects.js"></script>
 
 </HTML>

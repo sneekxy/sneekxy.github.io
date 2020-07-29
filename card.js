@@ -17,11 +17,22 @@ function createRandomCard(spec){
 			if(cardNum == 0 && playerStats.goldUpgrades[10] == 0){
 				cardNum = 1;
 			}
-			if((cardNum > 1 && cardNum < 5) && playerStats.catUpgrades[0] == 0)
+			if((cardNum > 1 && cardNum < 7) && playerStats.catUpgrades[0] == 0)
 				cardNum = 1;
-			if(cardNum > 8 && playerStats.goldUpgrades[12] == 0){
+			if((cardNum > 4 && cardNum < 7) && playerStats.goldUpgrades[29] == 0)
+				cardNum = 1;
+			if(cardNum > 10 && playerStats.goldUpgrades[12] == 0){
 				cardNum -= 4;
 			}
+		}
+		if(rarity == 2){
+			if(cardNum > 14 && (playerStats.catUpgrades[15] != 1 || playerStats.goldUpgrades[30] != 1))
+				cardNum = Math.floor(Math.random() * 15);
+			if(cardNum < 9 && playerStats.goldUpgrades[30] == 0)
+				cardNum = 9;
+			if(cardNum > 8 && cardNum < 15 && playerStats.catUpgrades[15] == 0)
+				cardNum = 1;
+			
 		}
 		var c = new card(cardRarity[cardNum]);
 		addCards(c, 1);
@@ -31,12 +42,17 @@ function createRandomCard(spec){
 			var c = new card(commonCards[0]);
 		if(spec == 2)
 			var c = new card(uncommonCards[1]);
-		if(spec == 3)
-			var c = new card(uncommonCards[Math.floor(Math.random() * (4)+1)]);
+		if(spec == 3){
+			var rng = 4;
+			if(playerStats.goldUpgrades[29] == 1){
+				rng = 6;
+			}
+			var c = new card(uncommonCards[Math.floor(Math.random() * (rng)+1)]);
+		}
 		addCards(c, 1);
 	}
 	playerStats.cardsOwned = getCardCount();
-	playerStats.cardsOwnedTotal = getCardCount();
+	playerStats.cardsOwnedTotal++;
 	
 }
 function card(card){
@@ -58,6 +74,7 @@ function card(card){
 			case(7): retVal = "Illustrious"; break;
 			case(8): retVal = "Mythic"; break;
 			case(9): retVal = "Exalted"; break;
+			case(10): retVal = "Gem"; break;
 		}
 		return retVal;
 	}
@@ -74,6 +91,35 @@ function addCards(c, num){
 		}
 };
 
+function buildCardHolder(cha){
+	for(key in cha){
+		var c = getCardByID(key);
+		if(c != ""){
+			cardHolder.push(c);
+		}
+	}
+}
+function getCardByID(id){
+	var retVal = "";
+	for(var x = 0; x < cardDB.length; x++){
+		var holder = cardDB[x];
+		var holderID = Number(holder[holder.length-1].split(":")[1]);
+		if(id <= holderID){
+			for(var y = 0; y < holder.length; y++){
+				var holdID = Number(holder[y].split(":")[1]);
+				if(id == holdID){
+					retVal = new card(holder[y]);
+					break;
+				}
+			}
+			break;
+		}
+		else{
+			continue;
+		}
+	}
+	return retVal;
+}
 function getRandomRarity(){
 	var retVal = 0;
 	var pass = true;
@@ -81,14 +127,18 @@ function getRandomRarity(){
 		while(pass){
 			if(doLuck(playerStats.upgradeChance+(playerStats.catUpgrades[3]*5))){
 				retVal++
-				pass = false;
 			}
 			else{
 				pass = false;
 			}
 		}
-		if(retVal > 1)
-			retVal = 1;
+		if(retVal > 2)
+			retVal = 2;
+		
+		if(playerStats.rareEnable == 0){
+			if(retVal > 1)
+				retVal = 1;
+		}
 	}
 	
 	return retVal;

@@ -41,7 +41,7 @@
 		border-width:thin;
 		border-color:purple;
 		position:absolute;
-		left:200px;
+		left:250px;
 	}
 	.buildingLineEarned{
 		border-style:solid;
@@ -105,8 +105,8 @@
 	.tooltipHolder .tooltip{
 		visibility:hidden;
 		position:absolute;
-		width:300px;
-		background-color: #02adff;
+		width:350px;
+		background-color: #004465;
 		color: #fff;
 		border: black 2px solid;
 		text-align:center;
@@ -122,11 +122,11 @@
 		-webkit-user-select: none;
 		-moz-user-select: none;
 	}
-	.upgradeItem .tooltip, .upgradeItemBoughtHolder .tooltip, .buildingMerge .tooltip, .eagleHolder .tooltip{
+	.upgradeItem .tooltip, .upgradeItemBoughtHolder .tooltip, .buildingMerge .tooltip, .eagleHolder .tooltip, .gemCurrencyHolder .tooltip{
 		visibility:hidden;
 		position:absolute;
 		width:300px;
-		background-color: #02adff;
+		background-color: #004465;
 		color: #fff;
 		border: black 2px solid;
 		text-align:center;
@@ -142,7 +142,7 @@
 		-webkit-user-select: none;
 		-moz-user-select: none;
 	}
-	.upgradeItem:hover .tooltip, .upgradeItemBoughtHolder:hover .tooltip, .tooltipHolder:hover .tooltip, .buildingMerge:hover .tooltip, .eagleHolder:hover .tooltip{
+	.upgradeItem:hover .tooltip, .upgradeItemBoughtHolder:hover .tooltip, .tooltipHolder:hover .tooltip, .buildingMerge:hover .tooltip, .eagleHolder:hover .tooltip, .gemCurrencyHolder:hover .tooltip{
 		visibility: visible;
 	}
 	
@@ -186,6 +186,7 @@
 		width:1100px;
 	}
 	.menuSelector{
+		display:none;
 		border:dotted 2px green;
 		position:absolute;
 		width:50px;
@@ -211,7 +212,19 @@
 		height:20px;
 		bottom:100px;
 	}
+	.gemBuyHolder{
+		border: dotted 1px red;
+		position:absolute;
+		width:250px;
+		height:20px;
+		bottom:100px;
+		cursor:pointer;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		
+	}
 	.buildingMerge{
+		display:none;
 		border:dotted 1px yellow;
 		position:absolute;
 		right:-80px;
@@ -224,7 +237,27 @@
 	hr.black{
 		border: 1px solid black;
 	}
+	.playerEQHolder{
+		background-image:url("art/eq/playerBG.png");
+		width:450px;
+		height:450px;
+		border:dotted 3px orange;
+	}
+	.playerEQBackground{
+		width:450px;
+		height:450px;
+		position:absolute;
+		background-color:white;
+	}
+	.playerEQSlot{
+		width:64px;
+		height:64px;
+		position:absolute;
+		background-color:blue;
+	}
 	.eagleHolder{
+	}
+	.gemCurrencyHolder{
 	}
 	
 	
