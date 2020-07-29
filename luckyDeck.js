@@ -143,6 +143,10 @@ function mainLoop(){
 	updateGameDisplay();
 	checkUpgrades();
 }
+function mainLoopNoDisplay(){
+	updateGainsThisTick();
+	applyGainsThisTick();
+}
 
 function doTest(){
 var d = new Date();
@@ -159,10 +163,23 @@ console.log(ts2 - ts);
 
 function mainTick(x){
 	interval = setInterval(function() {
+		if(isNaN(endTime))
+			endTime = Date.now();
 		var elapsedTime = endTime - Date.now();
 		if(elapsedTime < 0){
 			var timesRan = 1+Math.floor(Math.abs(elapsedTime)/(x*1000));
-			mainLoop();
+			if(timesRan > 232000)
+				timesRan = 232000;
+			if(timesRan >= 10){
+				for(var y=0; y< timesRan; y++){
+					mainLoopNoDisplay();
+				}
+				updateGameDisplay();
+				checkUpgrades();
+			}
+			else{
+				mainLoop();
+			}
 			clearInterval(interval);
 			endTime = Date.now() + (x*1000);
 			mainTick(x);
@@ -749,6 +766,7 @@ function saveGame(){
 	localStorage.setItem("player", JSONfn.stringify(playerStats));
 //	localStorage.setItem("card", JSONfn.stringify(cardHolder));
 	localStorage.setItem("cardH", JSONfn.stringify(cardHolderAmt));
+	localStorage.setItem("lastTick", JSONfn.stringify(endTime));
 }
 function loadGame(){
 	if(localStorage.getItem("player"))
@@ -757,6 +775,8 @@ function loadGame(){
 //		cardHolder = JSONfn.parse(localStorage.getItem("card"));
 	if(localStorage.getItem("cardH"))
 		cardHolderAmt = JSONfn.parse(localStorage.getItem("cardH"));
+	if(localStorage.getItem("lastTick"))
+		endTime = JSONfn.parse(localStorage.getItem("lastTick"));
 	buildCardHolder(cardHolderAmt);
 }
 function resetGame(){
