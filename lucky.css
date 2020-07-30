@@ -216,7 +216,7 @@
 		width:1100px;
 	}
 	.menuSelector{
-		
+		display:none;
 		border:dotted 2px green;
 		position:absolute;
 		width:50px;
@@ -263,7 +263,7 @@
 		-moz-user-select: none;
 	}
 	.buildingMerge{
-
+		display:none;
 		border:dotted 1px yellow;
 		position:absolute;
 		right:-80px;
