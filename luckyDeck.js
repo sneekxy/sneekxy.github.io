@@ -300,12 +300,11 @@ function calculateEagle(gs){
 			reduc *= (1+Math.pow(playerStats.cat,.03)*(playerStats.cat/1000000)) * playerStats.catEagleReduc;
 		}
 		reduc *= playerStats.gemEagleVal;
-		console.log(powDif);
 		if(powDif >= 2){
-			reduc /= 50;
+			reduc /= 20;
 		}
 		if(powDif >= 3){
-			reduc /= 10;
+			reduc /= 25;
 		}
 		var effGS = (gs-(minVal))/reduc;
 		retVal = Math.round(Math.pow(.999,(effGS))*10000)/10000;
