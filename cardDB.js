@@ -46,15 +46,15 @@ var rareCards = [
 "14:44:Bird Traps:3:Like bear traps but for birds. Can get up to 15 cats a turn but the more Eagles attacking the more you will get.:ecat;15",
 "15:45:Blood Craze:3:You know what they say, give a cat an eagle.... It's only a matter of time. Increases Cat effectiveness against Eagles:tcat;10",
 
-"16:46:'Sword':3:Pronounced 'Sword', you can swing it around to cut stuff up. Gives you +1 Strength.:str;1",
-"17:47:Bascinet:3:Neat little cap that will offer you some protection. Gives you +1 Stamina.:stam;1",
-"18:48:Iron Vest:3:Kind of heavy but durable chestplate. Will provide you with +1 Endurance.:end;1",
-"19:49:Pants:3:Every hero needs pants. These are loose fitting and give you +1 Dexterity.:dex;1",
-"20:50:Spaulder:3:Some kind of metal that protects your shoulders. But you use the weight to swing harder. Gives +1 Strength.:str;1",
-"21:51:Leather Belt:3:Make sure the belt is tight around your waist to maximize your intra-abdominal pressure so you can get +1 Stamina.:stam;1",
-"22:52:Stompers:3:STOMP STOMP STOMP. Jump around and stomp the ground. Get +1 Endurance while you're at it.:end;1",
-"23:53:Fingerless Gloves:3:Super cool gloves for a super cool person like you. Gives +1 Dexterity from the coolness.:dex;1",
-"24:54:Shiney Object:3:This strange little object emits a LOT of light. LIke, really. You feel luckier holding it though. +1 Luck.:luck;1",
+"23:46:'Sword':3:Pronounced 'Sword', you can swing it around to cut stuff up. Gives you +1 Strength.:str;1",
+"24:47:Bascinet:3:Neat little cap that will offer you some protection. Gives you +1 Stamina.:stam;1",
+"25:48:Iron Vest:3:Kind of heavy but durable chestplate. Will provide you with +1 Endurance.:end;1",
+"26:49:Pants:3:Every hero needs pants. These are loose fitting and give you +1 Dexterity.:dex;1",
+"27:50:Spaulder:3:Some kind of metal that protects your shoulders. But you use the weight to swing harder. Gives +1 Strength.:str;1",
+"28:51:Leather Belt:3:Make sure the belt is tight around your waist to maximize your intra-abdominal pressure so you can get +1 Stamina.:stam;1",
+"29:52:Stompers:3:STOMP STOMP STOMP. Jump around and stomp the ground. Get +1 Endurance while you're at it.:end;1",
+"30:53:Fingerless Gloves:3:Super cool gloves for a super cool person like you. Gives +1 Dexterity from the coolness.:dex;1",
+"31:54:Shiney Object:3:This strange little object emits a LOT of light. LIke, really. You feel luckier holding it though. +1 Luck.:luck;1",
 ];
 var fabledCards = [];
 var exquisiteCards = [];

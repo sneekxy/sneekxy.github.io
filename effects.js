@@ -59,8 +59,8 @@ function applyEffect(effect, amt, ugl, eid){
 					for(var x=0; x<amt; x++){
 						switch(Math.floor(Math.random() * (randVals))){
 							case(0):upperVal = doRangeLuck(0, valCont+2, true); break;
-							case(1):lowerVal = valCont+1; upperVal = lowerVal * 1.5; break;
-							case(2):lowerVal = valCont+3; upperVal = lowerVal * 2; break;
+							case(1):lowerVal = valCont; upperVal = lowerVal * 1.5; break;
+							case(2):lowerVal = valCont+2; upperVal = lowerVal * 2; break;
 							case(3):lowerVal = valCont*2.5; upperVal = lowerVal * 2; break;
 							case(4):upperVal = doRangeLuck(0, valCont*8.5, true); break;
 							case(5):lowerVal = valCont*3.5; upperVal = lowerVal*2; break;
@@ -321,6 +321,7 @@ function applyEffect(effect, amt, ugl, eid){
 				if(reducs > 1){
 					catAmt = ((1-Math.pow(reducs,.45))/(1-reducs))*catAmt;
 				}
+				catAmt += 1;
 				var catVal = Math.floor(((15+Number(effList2[1])+(Math.log10(catAmt)*4))/100) * baseVal);
 				applyCatBucket(catVal, ugl);
 			break;
@@ -366,7 +367,7 @@ function applyEffect(effect, amt, ugl, eid){
 				applyGemBucket(reduc*100, ugl);
 			break;
 			case("gem3"):
-				var totalIncrease = 1+ .055 * amt;
+				var totalIncrease = 1+ .06 * amt;
 				playerStats.gemCatGain = totalIncrease;
 				applyGemBucket(Math.round((totalIncrease-1)*100), ugl);
 			break;
@@ -386,7 +387,7 @@ function applyEffect(effect, amt, ugl, eid){
 				applyGemBucket(Math.round((totalIncrease-1)*100), ugl);
 				break;
 			case("gem7"):
-				var decVal = 1 - ((2/(1+Math.pow(Math.E,(amt/200 * -1))))-1);
+				var decVal = 1 - ((2/(1+Math.pow(Math.E,(amt/150 * -1))))-1);
 				playerStats.gemCardCost = decVal;
 				var disVal = Math.round((1-decVal)*1000)/1000;
 				applyGemBucket(disVal*100, ugl);

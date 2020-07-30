@@ -49,6 +49,10 @@ function createRandomCard(spec){
 			}
 			var c = new card(uncommonCards[Math.floor(Math.random() * (rng)+1)]);
 		}
+		if(spec == 4){
+			console.log("hey there: "+arguments.callee.caller.name);
+			var c = new card(rareCards[15]);
+		}
 		addCards(c, 1);
 	}
 	playerStats.cardsOwned = getCardCount();
@@ -172,6 +176,15 @@ function getCardAmtOfLine(ugl){
 	cl = cl.filter(card => card.upgradeLine == ugl);
 	for(var key in cl){
 		retVal += getCardAmt(cl[key].id);
+	}
+	return retVal;
+}
+function getCardAmtOfLineFull(ugl){
+	var retVal = [];
+	var cl = cardHolder.slice();
+	cl = cl.filter(card => card.upgradeLine == ugl);
+	for(var key in cl){
+		retVal.push(getCardAmt(cl[key].id)+";"+cl[key].rarity+";"+cl[key].id);
 	}
 	return retVal;
 }
