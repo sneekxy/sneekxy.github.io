@@ -15,7 +15,7 @@ var uncommonCards = [
 "12:12:Box:2:Cats like to hide in boxes but not always! The more boxes you have the more likely you are to catch cats!.:bcat;1",
 "13:13:Hair Balls:2:Cats shed hair, you collect hair. You build new cats from hair. Gives cats based on total cat production.:hcat;1",
 "14:14:Cages:2:We can use the captured Eagles as cat bait. Gain up to 3 cats a turn, this is increased by the number of Eagles attacking.:ecat;3",
-"15:15:Taste for Eagles:2:Once a cat has had Eagle it cannot be stopped. Increases the effectiveness of Cats against Eagles.:tcat;2",
+"15:15:Taste for Eagles:2:Once a cat has had Eagle it cannot be stopped. Increases the effectiveness of Cats against Eagles.:tcat;2.5",
 
 
 
@@ -44,7 +44,7 @@ var rareCards = [
 "12:42:String:3:Cats love strings more than boxes, get a bunch and you'll have a cat army.:bcat;5",
 "13:43:Cat Brushes:3:These things collect cat hair like you wouldn't believe! Gives a large ammount of cats based on total cat production.:hcat;5",
 "14:44:Bird Traps:3:Like bear traps but for birds. Can get up to 15 cats a turn but the more Eagles attacking the more you will get.:ecat;15",
-"15:45:Blood Craze:3:You know what they say, give a cat an eagle.... It's only a matter of time. Increases Cat effectiveness against Eagles:tcat;10",
+"15:45:Blood Craze:3:You know what they say, give a cat an eagle.... It's only a matter of time. Increases Cat effectiveness against Eagles:tcat;11",
 
 "23:46:'Sword':3:Pronounced 'Sword', you can swing it around to cut stuff up. Gives you +1 Strength.:str;1",
 "24:47:Bascinet:3:Neat little cap that will offer you some protection. Gives you +1 Stamina.:stam;1",
@@ -54,7 +54,7 @@ var rareCards = [
 "28:51:Leather Belt:3:Make sure the belt is tight around your waist to maximize your intra-abdominal pressure so you can get +1 Stamina.:stam;1",
 "29:52:Stompers:3:STOMP STOMP STOMP. Jump around and stomp the ground. Get +1 Endurance while you're at it.:end;1",
 "30:53:Fingerless Gloves:3:Super cool gloves for a super cool person like you. Gives +1 Dexterity from the coolness.:dex;1",
-"31:54:Shiney Object:3:This strange little object emits a LOT of light. LIke, really. You feel luckier holding it though. +1 Luck.:luck;1",
+"31:54:Shiny Object:3:This strange little object emits a LOT of light. LIke, really. You feel luckier holding it though. +1 Luck.:luck;1",
 ];
 var fabledCards = [];
 var exquisiteCards = [];

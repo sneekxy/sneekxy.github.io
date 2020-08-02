@@ -6,14 +6,21 @@
 		border-style:solid;
 		border-width:thin;
 		position:absolute;
-		top:80px;
 		height:500px;
 		width:1100px;
+	}
+	.mainMenu{
+		top:7%;
+		left:0px;
+		height:500px;
+		position:absolute;
+		width:1100px;
+		border:2px cyan dotted;
 	}
 	.buyPackHolder{
 		border:solid 1px orange;
 		position:absolute;
-		top:560px;
+		bottom:0px;
 		height:20px;
 		z-index:1;
 		width:1100px;
@@ -111,6 +118,45 @@
 		width:64px;
 		filter:grayscale(1);
 	}
+	.jewelSlot .tooltip{
+		visibility:hidden;
+		position:absolute;
+		width:300px;
+		background-color: #004465;
+		color: #fff;
+		border: black 2px solid;
+		text-align:center;
+		font-family: "Courier New", Courier, monospace;
+		font-size: 12px;
+		text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+		border-radius: 6px;
+		padding-top: 3px;
+		padding-bottom: 3px;
+		bottom:-50px;
+		z-index: 5;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+	}
+	.jewelSlotBuy .tooltip{
+		visibility:hidden;
+		position:absolute;
+		width:700px;
+		background-color: #004465;
+		color: #fff;
+		border: black 2px solid;
+		text-align:center;
+		font-family: "Courier New", Courier, monospace;
+		font-size: 12px;
+		text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+		border-radius: 6px;
+		padding-top: 3px;
+		padding-bottom: 3px;
+		left:0px;
+		bottom:0px;
+		z-index: 5;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+	}
 	.buildingLineEQ .tooltipHolder .tooltip{
 		visibility:hidden;
 		position:absolute;
@@ -151,7 +197,7 @@
 		-webkit-user-select: none;
 		-moz-user-select: none;
 	}
-	.upgradeItem .tooltip, .upgradeItemBoughtHolder .tooltip, .buildingMerge .tooltip, .eagleHolder .tooltip, .gemCurrencyHolder .tooltip, .playerStatLine .tooltip{
+	.upgradeItem .tooltip, .upgradeItemBoughtHolder .tooltip, .buildingMerge .tooltip, .eagleHolder .tooltip, .gemCurrencyHolder .tooltip, .playerStatLine .tooltip, .playerStatLine2 .tooltip{
 		visibility:hidden;
 		position:absolute;
 		width:300px;
@@ -171,8 +217,9 @@
 		-webkit-user-select: none;
 		-moz-user-select: none;
 	}
-
-	.upgradeItem:hover .tooltip, .upgradeItemBoughtHolder:hover .tooltip, .tooltipHolder:hover .tooltip, .buildingMerge:hover .tooltip, .eagleHolder:hover .tooltip, .gemCurrencyHolder:hover .tooltip, .playerStatLine:hover .tooltip{
+	
+	.upgradeItem:hover .tooltip, .upgradeItemBoughtHolder:hover .tooltip, .tooltipHolder:hover .tooltip, .buildingMerge:hover .tooltip, .eagleHolder:hover .tooltip, 
+	.gemCurrencyHolder:hover .tooltip, .jewelSlotBuy:hover .tooltip, .playerStatLine:hover .tooltip, .jewelSlot:hover .tooltip, .playerStatLine2:hover .tooltip{
 		visibility: visible;
 	}
 	
@@ -212,7 +259,7 @@
 		border:solid 4px red;
 		position:absolute;
 		bottom:0px;
-		height:300px;
+		height:10%;
 		width:1100px;
 	}
 	.menuSelector{
@@ -245,7 +292,7 @@
 	.gemBuyHolder{
 		border: dotted 1px red;
 		position:absolute;
-		width:250px;
+		width:400px;
 		height:20px;
 		bottom:100px;
 		cursor:pointer;
@@ -255,7 +302,7 @@
 	.breakGearHolder{
 		border: dotted 1px red;
 		position:absolute;
-		width:300px;
+		width:400px;
 		height:50px;
 		bottom:100px;
 		cursor:pointer;
@@ -343,6 +390,95 @@
 		width:270px;
 		margin-bottom:5px;
 	}
+	.buildingLineJ{
+		border-style:solid;
+		border-width:thin;
+		position:relative;
+		height:25px;
+		width:300px;
+		margin-bottom:5px;
+	}
+	.jewelSlotHolder{
+		position:absolute;
+		left:400px;
+		top:0px;
+		width:700px;
+		height:350px;
+		border:1px green dotted;
+	}
+	.jewelSlotLine{
+		width:700px;
+		height:32px;
+		border:1px red solid;
+	}
+	.jewelSlotName{
+		top:20px;
+	}
+	.jewelSlotLineHolder{
+		width:580px;
+		height:32px;
+		position:absolute;
+		left:120px;
+	}
+	.jewelSlot{
+		width:32px;
+		height:32px;
+		border:1px white solid;
+		display:inline-block;
+		margin-left:5px;
+		z-index:5;
+		cursor:hand;
+	}
+	.jewelSlotColumn{
+		width:120px;
+		height:230px;
+		border:2px blue solid;
+		display:inline-block;
+		margin-top:15px;
+		margin-right:15px;
+	}
+	.jewelColumnHeader{
+		text-align:center;
+		font-size:25px;
+	}
+	.jewelColumnHeaderOnyx{
+		text-align:center;
+		font-size:25px;
+		text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+		color:black;
+	}
+	.jewelSlotBuy{
+		width:110px;
+		height:40px;
+		border:1px solid white;
+		text-align:center;
+		font-size:15px;
+		margin-bottom:15px;
+		margin-top:20px;
+		display:table;
+		cursor:hand;
+	}
+	.cancelButton{
+		position:absolute;
+		right:0px;
+		top:0px;
+		width:32px;
+		height:32px;
+		border:1px white solid;
+		background-image:url("art/eq/cancel.png");
+		cursor:hand;
+	}
+	.questStatLine{
+		bottom:30px;
+		left:5px;
+		position:absolute;
+	}
+	.questStatLine2{
+		bottom:30px;
+		right:5px;
+		position:absolute;
+		text-align:right;
+	}
 	hr.white{
 		border:1px solid white;
 		margin-bottom: 10px;
@@ -351,5 +487,196 @@
 	}
 	.gemCurrencyHolder{
 	}
+	.questHolder{
+		width:700px;
+		height:400px;
+		position:absolute;
+		border:1px red solid;
+	}
+	.questText{
+		position:absolute;
+		max-width:700px;
+		max-height:399px;
+		bottom:0px;
+		display: table-cell;
+		vertical-align: bottom;
+		overflow:scroll;
+	}
+	.questInfoHolder{
+		position:absolute;
+		left:700px;
+		width:400px;
+		height:400px;
+		border:1px solid cyan;
+	}
+	.questInfoLine{
+		margin:5px;
+		border-top: 1px solid white;
+	}
+	.questInfoValue{
+		right:10px;
+		position:absolute;
+	}
+::-webkit-scrollbar {
+		display:none;
+	}
+@keyframes rainbow-text {
+  0% {
+    color: #e87d7d;
+  }
+  2% {
+    color: #e88a7d;
+  }
+  4% {
+    color: #e8977d;
+  }
+  6% {
+    color: #e8a47d;
+  }
+  8% {
+    color: #e8b07d;
+  }
+  10% {
+    color: #e8bd7d;
+  }
+  12% {
+    color: #e8ca7d;
+  }
+  14% {
+    color: #e8d77d;
+  }
+  16% {
+    color: #e8e47d;
+  }
+  18% {
+    color: #dfe87d;
+  }
+  20% {
+    color: #d3e87d;
+  }
+  22% {
+    color: #c6e87d;
+  }
+  24% {
+    color: #b9e87d;
+  }
+  26% {
+    color: #ace87d;
+  }
+  28% {
+    color: #9fe87d;
+  }
+  30% {
+    color: #92e87d;
+  }
+  32% {
+    color: #86e87d;
+  }
+  34% {
+    color: #7de881;
+  }
+  36% {
+    color: #7de88e;
+  }
+  38% {
+    color: #7de89b;
+  }
+  40% {
+    color: #7de8a8;
+  }
+  42% {
+    color: #7de8b5;
+  }
+  44% {
+    color: #7de8c1;
+  }
+  46% {
+    color: #7de8ce;
+  }
+  48% {
+    color: #7de8db;
+  }
+  50% {
+    color: #7de8e8;
+  }
+  52% {
+    color: #7ddbe8;
+  }
+  54% {
+    color: #7dcee8;
+  }
+  56% {
+    color: #7dc1e8;
+  }
+  58% {
+    color: #7db5e8;
+  }
+  60% {
+    color: #7da8e8;
+  }
+  62% {
+    color: #7d9be8;
+  }
+  64% {
+    color: #7d8ee8;
+  }
+  66% {
+    color: #7d81e8;
+  }
+  68% {
+    color: #867de8;
+  }
+  70% {
+    color: #927de8;
+  }
+  72% {
+    color: #9f7de8;
+  }
+  74% {
+    color: #ac7de8;
+  }
+  76% {
+    color: #b97de8;
+  }
+  78% {
+    color: #c67de8;
+  }
+  80% {
+    color: #d37de8;
+  }
+  82% {
+    color: #df7de8;
+  }
+  84% {
+    color: #e87de4;
+  }
+  86% {
+    color: #e87dd7;
+  }
+  88% {
+    color: #e87dca;
+  }
+  90% {
+    color: #e87dbd;
+  }
+  92% {
+    color: #e87db0;
+  }
+  94% {
+    color: #e87da4;
+  }
+  96% {
+    color: #e87d97;
+  }
+  98% {
+    color: #e87d8a;
+  }
+  100% {
+    color: #e87d7d;
+  }
+}
+.rainbow-text {
+  animation: rainbow-text 1s infinite;
+}
 	
 	

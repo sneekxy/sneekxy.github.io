@@ -50,7 +50,6 @@ function createRandomCard(spec){
 			var c = new card(uncommonCards[Math.floor(Math.random() * (rng)+1)]);
 		}
 		if(spec == 4){
-			console.log("hey there: "+arguments.callee.caller.name);
 			var c = new card(rareCards[15]);
 		}
 		addCards(c, 1);
@@ -203,4 +202,15 @@ function getCardCount(){
 		retVal += cardHolderAmt[key];
 	}
 	return retVal;
+}
+function getAllOfLine(ugl){
+	var cardList = cardHolder.slice();
+	cardList = cardList.filter(card => card.upgradeLine == ugl);
+	cardList.sort(function(a,b){
+		if(a.rarity > b.rarity){
+			return 1;
+		}
+		return -1;
+	});
+	return cardList;
 }

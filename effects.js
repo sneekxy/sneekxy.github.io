@@ -226,7 +226,7 @@ function applyEffect(effect, amt, ugl, eid){
 						var totGold = 0;
 						var times = Math.round(getLuckReroll()/2);
 						var upper = effList2[1];
-						var pluck = playerStats.luck + playerStats.goldUpgrades[6];
+						var pluck = scaledLuck(playerStats.luck) + playerStats.goldUpgrades[6];
 
 						for(var x = 0; x < times; x++){
 							totGold += doRangeLuck(0, upper, true);
@@ -341,10 +341,10 @@ function applyEffect(effect, amt, ugl, eid){
 				applyCatBucket(catEarned, ugl);
 			break;
 			case("tcat"):
-				var catVal = ((1+(Number(effList2[1])* amt/100)));
+				var catVal = (((Number(effList2[1])* amt/100)));
 				catVal = Math.round(catVal*1000)/1000;
-				playerStats.catEagleReduc = catVal;
-				applyCatBucket(catVal-1, ugl);
+				playerStats.catEagleReduc += catVal;
+				applyCatBucket(catVal, ugl);
 			break;
 			case("gem1"):
 				var chance = .1+((amt+1)*.1 * (Math.log10(amt+1)/10));

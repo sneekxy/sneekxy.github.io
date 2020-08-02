@@ -4,10 +4,14 @@ var bil = 1000000000;
 var timeValue = [0, "none"];
 var higherTax = 1;
 var higherMort = 1;
-var attriArray=["Str","Dex","Stam","End","luck","Hp","HpRegen","Dmg","Spd","Crit","CDmg","Armor","Resist"];
-
+var interval;
+var attriArray=["Str","Dex","Stam","End","luck","HpMax","HpRegen","Dmg","Spd","Crit","CDmg","Armor","Resist"];
+var jholder;
 var playerStats = {
 	turns: 0,
+	goldAverage: [],
+	catAverage: [],
+	gemAverage: [],
 	gold: 90,
 	cat: 0,
 	eagle: 1,
@@ -17,13 +21,40 @@ var playerStats = {
 	cps_multi: 1,
 	gps: 0,
 	gps_multi: 1,
+	questTimer: 10,
+	questReward: 300,
 	gems: 0,
 	geps: 0,
 	gemsBought: 0,
 	gemBuyAmt: 1,
 	cardsOwned: 0,
 	cardsOwnedTotal: 0,
+	avgGPS: 0,
+	avgCPS: 0,
+	avgGMPS: 0,
 	rareEnable: 0,
+	level: 1,
+	qlevel: 0,
+	qcompleted: 0,
+	qroomMax: 0,
+	qroom: 0,
+	inCombat: false,
+	monster: "",
+	monNam: "",
+	monHp: 0,
+	monCDmg: 0,
+	monDmg: 0,
+	monSpd: 0,
+	monArmor: 0,
+	monResist: 0,
+	keys: 0,
+	maps: 0,
+	bombs: 0,
+	bigKey: 0,
+	qName: "",
+	roomweight: [100,15,40,20,25,25,25,25,25,15,30,150,15,5,50,45,3,12,30,20,15],
+	exp: 0,
+	tnl: 100,
 	luck: 1,
 	Str: 1,
 	End: 1,
@@ -34,9 +65,13 @@ var playerStats = {
 	gend: 0,
 	gdex: 0,
 	gstam: 0,
+	pluck: 0,
+	pstr: 0,
+	pend: 0,
+	pdex: 0,
+	pstam: 0,
 	Hp: 10,
 	HpMax: 10,
-	gHp: 0,
 	gHpMax: 0,
 	HpRegen: 1,
 	gRegen: 0,
@@ -57,6 +92,7 @@ var playerStats = {
 	emeraldFragment: 0,
 	topazFragment: 0,
 	amethystFragment: 0,
+	fragVal: 4500,
 	helmet:[],
 	sword:[],
 	chest:[],
@@ -130,7 +166,7 @@ var playerStats = {
 	gem6Earned: 0,
 	gem7Earned: 0,
 	
-	
+	totalGemEarned: 0,
 	gemChance: .1,
 	gemCatsNeeded: 1000000,
 	gemCatGain: 1,
@@ -139,6 +175,12 @@ var playerStats = {
 	gemEagleVal : 1,
 	gemCardCost: 1,
 };
+playerStats.goldAverage.length = 300;
+playerStats.catAverage.length = 300;
+playerStats.gemAverage.length = 300;
+playerStats.goldAverage.fill(0);
+playerStats.catAverage.fill(0);
+playerStats.gemAverage.fill(0);
 
 var targetProxy = new Proxy(playerStats, {
 	set: function (target, key, value){
@@ -152,6 +194,7 @@ function pageInit(){
 	endTime = Date.now() + 1000;
 	loadGame();
 	saveLoop(10);
+	perMinInterval = setInterval(calcPerSec, 1000);
 	startGame();
 	createRandomCard(1);
 //	oneOfEvery();
@@ -197,9 +240,9 @@ function mainLoopNoDisplay(tr){
 		var diffC = playerStats.cat - currC;
 		var diffGm = playerStats.gems - currGm;
 		tr -= 25;
-		playerStats.gold += (diffG/25 * tr);
-		playerStats.cat += (diffC/25 * tr);
-		playerStats.gems += (diffGm/25 * tr);
+		addGold((diffG/25 * tr),1);
+		addCat((diffC/25 * tr),1);
+		addGem((diffGm/25 * tr),1);
 	}
 }
 
@@ -265,6 +308,7 @@ function updateGameDisplay(){
 	}
 	if(playerStats.catUpgrades[15] == 1 && playerStats.goldUpgrades[30] == 1){
 		showPlayerBuildings();
+		showQuestBuildings();
 	}
 	
 	calculatePackCost();
@@ -359,15 +403,56 @@ function applyGainsThisTick(){
 	
 //	playerStats.totalGold8Earned += playerStats.gold8Earned;
 	
-	playerStats.gold += Number(playerStats.gps);
-	playerStats.totalGoldEarned += Number(playerStats.gps);
+	addGold(playerStats.gps);
 	
-	playerStats.cat += Number(playerStats.cps);
-	playerStats.totalCatEarned += Number(playerStats.cps);
+	
+	addCat(playerStats.cps);
+	
 	playerStats.lastCatEarned = Math.floor((Number(playerStats.cps)-playerStats.cat4Earned)/playerStats.cps_multi);
 	
 	if(playerStats.catUpgrades[12]==1)
-		playerStats.gems += playerStats.geps;
+		addGem(playerStats.geps);
+}
+function addGold(g, t){
+	playerStats.gold += Number(g);
+	playerStats.totalGoldEarned += Number(playerStats.gps);
+	
+	if(!t)
+		playerStats.goldAverage[0] += Number(g);
+	
+}
+function addCat(c, t){
+	playerStats.cat += Number(c);
+	playerStats.totalCatEarned += Number(playerStats.cps);
+	
+	if(!t)
+		playerStats.catAverage[0] += Number(c);
+}
+function addGem(g, t){
+	playerStats.gems += Number(g);
+	playerStats.totalGemEarned += Number(playerStats.geps);
+	
+	if(!t)
+		playerStats.gemAverage[0] += Number(g);
+}
+function calcPerSec(){
+	playerStats.goldAverage.pop();
+	playerStats.goldAverage.unshift(0);
+	var goldPerMinute = playerStats.goldAverage.reduce(function(a,b){return a+b;});
+	goldPerMinute = Math.round((goldPerMinute/300)*100)/100;
+	playerStats.avgGPS = goldPerMinute;
+
+	playerStats.catAverage.pop();
+	playerStats.catAverage.unshift(0);
+	var catPerMinute = playerStats.catAverage.reduce(function(a,b){return a+b;});
+	catPerMinute = Math.round((catPerMinute/300)*100)/100;
+	playerStats.avgCPS = catPerMinute;
+	
+	playerStats.gemAverage.pop();
+	playerStats.gemAverage.unshift(0);
+	var gemPerMinute = playerStats.gemAverage.reduce(function(a,b){return a+b;});
+	gemPerMinute = Math.round((gemPerMinute/300)*100)/100;
+	playerStats.avgGMPS = gemPerMinute;
 }
 
 function updateGainsThisTick(){
@@ -377,7 +462,7 @@ function updateGainsThisTick(){
 	playerStats.Str = playerStats.Dex = playerStats.End = playerStats.Stam = playerStats.HpRegen = playerStats.Dmg = playerStats.Spd = playerStats.Armor = 
 	playerStats.Resist = 1;
 	
-	playerStats.Hp = playerStats.HpMax = 10;
+	playerStats.HpMax = 10;
 	playerStats.CDmg = 150;
 	playerStats.Crit = 5;
 	
@@ -466,12 +551,7 @@ function calcLottery(numHolder){
 	return sum;
 }
 
-function getLuckReroll(){
-	return Math.floor(1+playerStats.luck/3);
-}
-function getLuckPercent(percent){
-	return Math.floor(Number(percent) + (playerStats.luck/2));
-}
+
 
 function showGoldBuildings(){
 	if($('#goldProducers').is(":visible")){
@@ -585,157 +665,6 @@ function showCatBuildings(){
 			}
 		}
 	}
-}
-function showGemBuildings(){
-	$('#gemCurrencyHolder').show();
-	var gc = playerStats.gemChance;
-	if(gc < 1)
-		gc = formatNumber(gc*100)/100;
-	$('#gemTT').text("Every "+formatNumber(playerStats.gemCatsNeeded)+" cats have a "+gc+"% chance to find a gem each turn");
-	if($('#gemProducers').is(":visible")){
-		$('#gemCost').text(formatNumber(gemCardCost()));
-		for(var x =0; x<7; x++){
-			var c = getHighestRarityOfLine(x+16);
-			if(typeof c !== 'undefined'){
-				$('#gem'+x).show();
-				$('#gem'+x+'BuildingName').text(c.name);
-				$('#gem'+x+"TT").html(getBuildingTooltip(c.upgradeLine));
-				$('#gem'+x+'BuildingOwned').text(formatNumber(getCardAmt(c.id)));
-				if(x != 0){
-					$('#gem'+x+'BuildingEarned').text(formatNumber(playerStats["gem"+(x+1)+"Earned"])+"%");
-				}
-				else{
-					var gc = playerStats["gem"+(x+1)+"Earned"];
-					if(gc < 1000)
-						gc = formatNumber(gc)/100;
-					$('#gem'+x+'BuildingEarned').text(gc+"%");
-				}
-			}
-		}
-	}
-}
-
-function showPlayerBuildings(){
-	if($('#playerProducers').is(":visible")){
-		for(var x =0; x<9; x++){
-			var c = getHighestRarityOfLine(x+23);
-			if(typeof c !== 'undefined'){
-				$('#player'+x).show();
-				$('#player'+x+'BuildingName').text(c.name);
-				$('#player'+x+"TT").html(getBuildingTooltip(c.upgradeLine));
-				$('#player'+x+'BuildingOwned').text(formatNumber(getCardAmt(c.id)));
-			}
-		}
-		for(key in attriArray){
-			var x = attriArray[key];
-			$('#p'+x+'Val').text(playerStats[x]);
-			$('#statTT'+x).html(getStatTT(x));
-		}
-	}
-	if($('#jewelProducers').is(":visible")){
-		$('#jewel0BuildingEarned').text(formatNumber(playerStats.rubyFragment));
-		$('#jewel1BuildingEarned').text(formatNumber(playerStats.emeraldFragment));
-		$('#jewel2BuildingEarned').text(formatNumber(playerStats.topazFragment));
-		$('#jewel3BuildingEarned').text(formatNumber(playerStats.amethystFragment));
-		$('#jewel4BuildingEarned').text(formatNumber(playerStats.onyxFragment));
-		$('#breakCost').text(formatNumber(getBreakCost()));
-	}
-}
-function getBreakCost(){
-	var retVal = 0;
-	for(var x = 23; x < 32; x++){
-		var holder = getCardAmtOfLineFull(x);
-		for(var y = 0; y < holder.length; y++){
-			var amtSplit = holder[y].split(";");
-			if(y == holder.length-1){
-				retVal += ((Number(amtSplit[0])-1) * Math.pow(Number(amtSplit[1]),5));
-			}
-			else{
-				retVal += ((Number(amtSplit[0])) * Math.pow(Number(amtSplit[1]),5));
-			}
-		}
-	}
-	retVal = Math.floor(retVal);
-	return retVal;
-}
-function breakGearDown(){
-	var breakCost = getBreakCost();
-	if(playerStats.gems > breakCost){
-		playerStats.gems -= breakCost;
-		for(var x=23; x<32; x++){
-			var fragAmt = 0;
-			var holder = getCardAmtOfLineFull(x);
-			for(var y = 0; y < holder.length; y++){
-				var amtSplit = holder[y].split(";");
-				if(y == holder.length-1){
-					fragAmt += ((Number(amtSplit[0])-1) * (100+(25*Number(amtSplit[1]))) * getFact(Number(amtSplit[1])));
-					cardHolderAmt[Number(amtSplit[2])] = 1;
-				}
-				else{
-					fragAmt += ((Number(amtSplit[0])) * (100+(25*Number(amtSplit[1]))) * getFact(Number(amtSplit[1])));
-					cardHolderAmt[Number(amtSplit[2])] = 0;
-				}
-			}
-			fragAmt = Math.floor(fragAmt * (doRangeLuck(0,(playerStats.luck/2)*100 ,true)/100));
-			if(x == 23 || x == 27)
-				playerStats.rubyFragment += fragAmt;
-			if(x == 24 || x == 28)
-				playerStats.topazFragment += fragAmt;
-			if(x == 25 || x == 29)
-				playerStats.amethystFragment += fragAmt;
-			if(x == 26 || x == 30)
-				playerStats.emeraldFragment += fragAmt;
-			if(x == 31)
-				playerStats.onyxFragment += Math.floor(fragAmt/2);
-		}
-	}
-	updateGameDisplay();
-}
-function getFact(x){
-	var retVal = 1;
-	switch(x){
-		case(3): retVal = 6; break;
-		case(4): retVal = 24; break;
-		case(5): retVal = 120; break;
-		case(6): retVal = 720; break;
-		case(7): retVal = 5040; break;
-		case(8): retVal = 40320; break;
-		case(9): retVal = 362880; break;
-		case(10): retVal = 3628800; break;
-	}
-	return retVal;
-}
-
-function getStatTT(x){
-	var retVal = "";
-	switch(x){
-		case("Str"):retVal = "Your Strength increases your Damage and your Crit Damage. BE STRONG!"; break;
-		case("Dex"):retVal = "Dexterity is a measure of your speeeed. It increases your Attack Speed and Crit Chance!"; break;
-		case("Stam"):retVal = "Stamina will let you last longer in battle. It increases your HP and its regeneration rate"; break;
-		case("End"):retVal = "You might think Endurance would let you last longer in battle.... and it does, by giving you more Armor and Resist?";break;
-		case("luck"):retVal ="Luck makes most random things have a better outcome. It's probably the most important attribute in this game";break;
-		case("Hp"):retVal ="Health Points. If this hits 0 you die and the game is over (if you're on hardcore mode), otherwise you just have to wait for it to recover before you can continue exploring.";break;
-		case("HpRegen"):retVal = "How much HP you recover a turn. It helps you keep exploring faster"; break;
-		case("Dmg"):retVal = "How much damage you do on each attack. The higher this is the more <span style='color:red'>dangerous</span> you are."; break;
-		case("Spd"):retVal = "How fast you can attack. This number is how many attacks a turn you do."; break;
-		case("Crit"):retVal = "You know when you hit someone's weak spot and you do extra damage? That's a Critical Hit. This is how often you'll land one of those hits.";break;
-		case("CDmg"):retVal = "What good is a Critical Hit if the damage is the same? This makes those Critical Hits juice!";break;
-		case("Armor"):retVal = "Armor reduces the damage you take by a flat amount. This is applied after Resist.";break;
-		case("Resist"):retVal = "Resist redcues the damage you take by a percentage. This is applied before Armor.";break;
-	}
-	return retVal;
-}
-
-function getAllOfLine(ugl){
-	var cardList = cardHolder.slice();
-	cardList = cardList.filter(card => card.upgradeLine == ugl);
-	cardList.sort(function(a,b){
-		if(a.rarity > b.rarity){
-			return 1;
-		}
-		return -1;
-	});
-	return cardList;
 }
 
 function buyPacks(){
@@ -861,7 +790,17 @@ function nPackCost(n){
 	return retVal;
 }
 
+function getLuckReroll(){
+	return Math.floor(1+scaledLuck(playerStats.luck)/3);
+}
+function getLuckPercent(percent){
+	return Math.floor(Number(percent) + (scaledLuck(playerStats.luck)/2));
+}
 
+function scaledLuck(l){
+	var retVal = l*(1 - (l/(25+Math.abs(l))));
+	return Math.floor(1+retVal);
+}
 function doLuck(percent){
 	var retVal = false;
 	
@@ -920,6 +859,10 @@ function changeMenu(x){
 	hideAllMenu();
 	$('#'+x+'Producers').show();
 	$('#'+x+'MenuGlow').hide();
+	if(x == "jewel")
+		buildEQSlots();
+	if(x == "quest")
+		forceScroll();
 	updateGameDisplay();
 }
 function hideAllMenu(){
@@ -928,37 +871,7 @@ function hideAllMenu(){
 	$('#gemProducers').hide();
 	$('#playerProducers').hide();
 	$('#jewelProducers').hide();
-}
-function updateStats(){
-	playerStats.luck += playerStats.goldUpgrades[14];
-	playerStats.luck += playerStats.catUpgrades[6];
-	
-	playerStats.luck += playerStats.gluck;
-	
-	playerStats.Str += playerStats.gstr;
-	
-	playerStats.End += playerStats.gend;
-	
-	playerStats.Stam += playerStats.gstam;
-	
-	playerStats.Dex += playerStats.gdex;
-	
-	
-	playerStats.Dmg = Math.floor(playerStats.Str/2);
-	playerStats.Hp = Math.floor(10 + (playerStats.Stam));
-	playerStats.HpRegen = Math.floor(playerStats.Stam/2);
-	playerStats.Spd = 1+(playerStats.Dex/20);
-	playerStats.Crit = 5+(playerStats.Dex/15);
-	playerStats.CDmg = 150+(playerStats.Str/5);
-	playerStats.Armor = Math.floor(playerStats.End * 1.5);
-	playerStats.Resist = 1+(playerStats.End/3);
-	
-	
-	playerStats.gdex = playerStats.gstam = playerStats.gend = playerStats.gstr = playerStats.gluck = 
-	playerStats.gHp = playerStats.gHpMax = playerStats.gRegen = playerStats.gDmg = playerStats.gAs = 
-	playerStats.gCc = playerStats.Gcd = playerStats.gArmor = playerStats.gResist = 0;
-
-
+	$('#questProducers').hide();
 }
 
 function saveGame(){
@@ -997,7 +910,11 @@ function resetGame(){
 }
 
 function applyVersionUpdates(vh){
-	playerStats.unlockChecker.push(25);
+
+
+//for future use
+
+
 }
 
 
@@ -1034,7 +951,9 @@ function formatNumber(x){
 function expo(x,f){
 	return Number.parseFloat(x).toExponential(f);
 }
-
+function getStringPosition(string, subString, index){
+	return string.split(subString, index).join(subString).length;
+}
 Number.prototype.formatMoney = function(c, d, t){
 	var n = this, 
 	c = isNaN(c = Math.abs(c)) ? 0 : c, 
