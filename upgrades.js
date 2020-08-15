@@ -211,7 +211,7 @@ function checkUpgrades(){
 			case(28): if(playerStats.qcompleted >= 100 && playerStats.level >= 33){playerStats.unlockGemUpgrades[9] = 1;gemU+=1; playerStats.unlockChecker.splice(x,1);}break;
 			case(29): if(playerStats.qcompleted >= 250 && playerStats.level >= 65){playerStats.unlockGemUpgrades[10] = 1;gemU+=1; playerStats.unlockGemUpgrades[11] = 1; playerStats.unlockGemUpgrades[12] = 1; playerStats.unlockGemUpgrades[13] = 1; playerStats.unlockGemUpgrades[14] = 1; playerStats.unlockChecker.splice(x,1);}break;
 			case(30): if(playerStats.level >= 15){gemU+=1; playerStats.unlockGemUpgrades[4] = 1; playerStats.unlockChecker.splice(x,1);}break;
-			case(31): if(playerStats.level >= 15){catU+=1; playerStats.unlockCUpgrades[16] = 1; playerStats.unlockChecker.splice(x,1);} break;
+			case(31): if(playerStats.level >= 2){catU+=1; playerStats.unlockCUpgrades[16] = 1; playerStats.unlockChecker.splice(x,1);} break;
 			case(32): if(playerStats.level >= 25){catU+=1; playerStats.unlockCUpgrades[17] = 1; playerStats.unlockChecker.splice(x,1);} break;
 			case(33): if(playerStats.level >= 35){catU+=1; playerStats.unlockCUpgrades[18] = 1; playerStats.unlockChecker.splice(x,1);} break;
 			case(34): if(playerStats.level >= 45){catU+=1; playerStats.unlockCUpgrades[19] = 1; playerStats.unlockChecker.splice(x,1);} break;
@@ -289,26 +289,26 @@ var cUpgrades = [
 "13;Diamond Cats;Buying Gem cards now give an extra Gem card(You gain an additional Gem card for each previously bought Gem card too!);10000000;c",
 "14;Diamond Claws;Sharp claws make sharp deals. Gem cards are half price and scale slower!!;250000000;c",
 "15;Rare Cats;Unlocks RARE cats. When combined with Rare Cards, new cards will be unlocked!(You get one for free!);700000000;c",
-"16;Cat Mercenaries;Turn your cats into mercenaries that fight for you! The first time you are defeated on a quest the mercenaries will sacrifice themselves for you.;2000000000;c",
-"17;Cat Alchemists;Train some cats to become Alchemists that increase the effect of potions by 100%!;3000000000;c",
-"18;Cat Explorer;These cats are master explorers and will teach you their secrets! You have a 10% chance of finding extra Keys, Big Keys, Maps, Bombs, and Potions!;4000000000;c",
-"19;Cat Merchants;Teach some cats the masterful art of selling. They will increase the yield from quest rewards(excluding Jewel Fragments) by 50%!;5000000000;c",
-"20;Cat Sensei;Train cats to become your trainer??? They will show you how to properly utilize your attributes, increasing their effect!;6000000000;c",
+"16;Cat Mercenaries;Turn your cats into mercenaries that fight for you! The first time you are defeated on a quest the mercenaries will sacrifice themselves for you.;4000000000;c",
+"17;Cat Alchemists;Train some cats to become Alchemists that increase the effect of potions by 100%!;6000000000;c",
+"18;Cat Explorer;These cats are master explorers and will teach you their secrets! You have a 10% chance of finding extra Keys, Big Keys, Maps, Bombs, and Potions!;8000000000;c",
+"19;Cat Merchants;Teach some cats the masterful art of selling. They will increase the yield from quest rewards(excluding Jewel Fragments) by 50%!;10000000000;c",
+"20;Cat Sensei;Train cats to become your trainer??? They will show you how to properly utilize your attributes, increasing their effect!;12000000000;c",
 ];
 var gemUpgrades = [
-"0;Strength Injection;Use your Gems to buy some legal drugs that give you +2 Strength!;2000000;m",
-"1;Stamina Powder;One sniff of this 'approved' powder will give you huge burst of Stamina! +2 Stamina infect.;2000000;m",
-"2;Endurance Pill;Take 1 pill every day for long lasting endurance everywhere! Do not take more than 1 pill a day! +2 Endurance.;2000000;m",
-"3;Dexterity Juice;One sip is all it takes to speed you up so fast everything else seems to slow down! +2 Dexterity, don't tell anyone you have this.;2000000;m",
-"4;Wonder Stick;Light this up and suck in the fumes. If you're into that kind of thing. It'll give you a pretty big boost though! +2 to all Attributes!;10000000;m",
-"5;Better Shoes;Upgrade your shoes so you can quest faster! Questing is 10% faster;20000000;m",
-"6;Anvil; With an anvil you'll be more efficient in breaking down armor cards. Thus giving you more fragments!;30000000;m",
-"7;Super Glue;Putting jewel fragments together is a pain, but with Super Glue you'll be able to create more powerful jewels with less fragments!;40000000;m",
-"8;EXP Stone;This magical stone will increase the amount of Experience Points you gain by 25%.;50000000;m",
-"9;Combat Expertise;All this time questing has made you an effective battling machine. Eagles are reduced based on the number of completed quests.;60000000;m",
-"10;Deeper Dungeons;Dungeons deeper underground give better rewards. Now your rewards within dungeons are increased by 20%.;100000000;m",
-"11;Crown of Wonder;Spooky powerful crown will make you spooky powerful! +10 to all Attributes.;200000000;m",
-"12;Power Leveling;Reduces the Experience Points required per level by 15%, this is retroactive!;500000000;m",
+"0;Strength Injection;Use your Gems to buy some legal drugs that give you +2 Strength!;4000000;m",
+"1;Stamina Powder;One sniff of this 'approved' powder will give you huge burst of Stamina! +2 Stamina infect.;4000000;m",
+"2;Endurance Pill;Take 1 pill every day for long lasting endurance everywhere! Do not take more than 1 pill a day! +2 Endurance.;4000000;m",
+"3;Dexterity Juice;One sip is all it takes to speed you up so fast everything else seems to slow down! +2 Dexterity, don't tell anyone you have this.;4000000;m",
+"4;Wonder Stick;Light this up and suck in the fumes. If you're into that kind of thing. It'll give you a pretty big boost though! +2 to all Attributes!;20000000;m",
+"5;Better Shoes;Upgrade your shoes so you can quest faster! Questing is 10% faster;50000000;m",
+"6;Anvil; With an anvil you'll be more efficient in breaking down armor cards. Thus giving you more fragments!;60000000;m",
+"7;Super Glue;Putting jewel fragments together is a pain, but with Super Glue you'll be able to create more powerful jewels with less fragments!;70000000;m",
+"8;EXP Stone;This magical stone will increase the amount of Experience Points you gain by 25%.;80000000;m",
+"9;Combat Expertise;All this time questing has made you an effective battling machine. Eagles are reduced based on the number of completed quests.;90000000;m",
+"10;Deeper Dungeons;Dungeons deeper underground give better rewards. Now your rewards within dungeons are increased by 20%.;300000000;m",
+"11;Crown of Wonder;Spooky powerful crown will make you spooky powerful! +10 to all Attributes.;500000000;m",
+"12;Power Leveling;Reduces the Experience Points required per level by 15%, this is retroactive!;700000000;m",
 "13;Running in the;Why walk when you can run? Questing is 15% faster!;900000000;m",
 "14;Mimic Detection;You're better at telling which treasure chests have better rewards! (Did you know quest rewards are tiered?) +1 to the minimum tier of quest rewards!;1500000000;m",
 ];
