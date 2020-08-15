@@ -205,12 +205,14 @@ function completeQuest(){
 		var tVal3 = gemReward(Math.floor(Math.random()*(12-8)+8));
 		var tVal4 = Math.floor(25 + Math.pow(playerStats.qlevel,1.3) * 10);
 		ss += "<br>You earned <span style='color:gold'>"+formatNumber(tVal1)+" Gold</span>, <span style='color:sandybrown'>"+formatNumber(tVal2)+" Cats</span>, and <span style='color:cyan'>"+formatNumber(tVal3)+" Gems</span>!";
+		ss += "<br><br>And you found a random equpiment card!";
 		setTimeout(function(){
 			quest2Text(ss);
 			questRGold(tVal1);
 			questRCat(tVal2);
 			questRGem(tVal3);
 			questRXP(tVal4);
+			createRandomCard(5);
 		},(playerStats.questTimer*1000/4));
 		setTimeout(function(){
 			newQuest();

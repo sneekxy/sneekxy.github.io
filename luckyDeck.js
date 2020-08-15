@@ -1,5 +1,5 @@
 var endTime;
-var ver_num = 0.3;
+var ver_num = 0.4;
 var bil = 1000000000;
 var timeValue = [0, "none"];
 var higherTax = 1;
@@ -997,6 +997,12 @@ if(vh == 0.1){
 if(vh == 0.2){
 	vh = 0.3;
 	playerStats.roomweight = [100,15,40,20,25,25,25,25,25,15,30,150,15,5,50,35,3,12,20,20,15,35];
+}
+if(vh == 0.3){
+	vh = 0.4;
+	for(var x = 0; x < playerStats.qcompleted; x++){
+		createRandomCard(5);
+	}
 }
 
 
