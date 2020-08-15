@@ -11,7 +11,11 @@ function showPlayerBuildings(){
 		}
 		for(key in attriArray){
 			var x = attriArray[key];
-			$('#p'+x+'Val').text(formatNumber(Number(playerStats[x])));
+			if(x != "HpRegen")
+				$('#p'+x+'Val').text(formatNumber(Number(playerStats[x])));
+			else{
+				$('#p'+x+'Val').text(Number(playerStats[x]));
+			}
 			$('#statTT'+x).html(getStatTT(x));
 		}
 	}
@@ -22,57 +26,103 @@ function showPlayerBuildings(){
 		$('#jewel2BuildingEarned').text(formatNumber(playerStats.topazFragment));
 		$('#jewel3BuildingEarned').text(formatNumber(playerStats.amethystFragment));
 		$('#jewel4BuildingEarned').text(formatNumber(playerStats.onyxFragment));
+		if(playerStats.slotsOwned == 7){
+			$('#buyJewelSlot').hide();
+		}
+		else{
+			$('#buyJewelSlot').show();
+			$('#newSlotCost').text(formatNumber(newSlotCost()));
+		}
 	}
 }
 function showQuestBuildings(){
 	if($('#questProducers').is(":visible")){
-		$('#questPlayerCurrHp').html(colorHp(playerStats.Hp));
+		$('#questStats').show();
+		$('#questPlayerCurrHp').html(colorHp(playerStats.Hp, true));
 		$('#questPlayerHp').html(formatNumber(Number(playerStats.HpMax)));
 		$('#questPlayerLevel').html(colorLevel(playerStats.level));
 		$('#questPlayerTNL').html(colorXP(playerStats.tnl));
 		$('#questName').html("<br>"+playerStats.qName);
-		$('#questLevel').html(playerStats.qlevel);
 		$('#questPLevel').html(qPowerLevel(playerStats.qlevel));
 		$('#questPLevel2').html(pPowerLevel());
-		$('#questRoomsLeft').html(playerStats.qroomMax - playerStats.qroom);
-		$('#questRooms').html(playerStats.qroom);
+		var roomLeft = playerStats.qroomMax - playerStats.qroom;
+		roomLeft = roomLeft>0?roomLeft:0;
+		$('#questRoomsLeft').html(genericColor(roomLeft,playerStats.qroomMax));
+		$('#questRooms').html(genericColor(playerStats.qroom,playerStats.qroomMax));
 		$('#questKeys').html(playerStats.keys);
 		$('#questKeysBig').html(playerStats.bigKey);
 		$('#questMaps').html(playerStats.maps);
 		$('#questBombs').html(playerStats.bombs);
-		/*
-		<div class="questInfoLine">Quest: <span id="questName"></span></div>
-				<div class="questInfoLine">Quest Level: <span id="questLevel"></span></div>
-				<div class="questInfoLine">Quest Power Level: <span id="questPLevel"></span></div>
-				<div class="questInfoLine">Your Power Level: <span id="questPLevel2"></span></div>
-				<div class="questInfoLine">Rooms Remaining: <span id="questRoomsLeft"></span></div>
-				<div class="questInfoLine">Rooms Completed: <span id="questRooms"></span></div>
-				<div class="questInfoLine">Keys: <span id="questKeys"></span></div>
-				<div class="questInfoLine">Big Keys: <span id="questKeysBig"></span></div>
-				<div class="questInfoLine">Maps: <span id="questMaps"></span></div>
-				<div class="questInfoLine">Bombs: <span id="questBombs"></span></div>
-			*/
+		$('#questPotions').html(playerStats.potions);
+		
+		if(playerStats.inCombat){
+			$('#questEnemyLevel').html(colorLevel(playerStats.monLevel));
+			$('#questEnemyHp').html(formatNumber(playerStats.monHpMax));
+			$('#questEnemyCurrHp').html(colorHp(playerStats.monHp, false));
+			if(playerStats.isBoss){
+				$('#questEnemyName').html(playerStats.monName);
+			}
+			else{
+				$('#questEnemyName').html("");
+			}
+			$('#enemyStats').show();
+		}
+		
 	}
 }
 function gainXP(x){
+	if(playerStats.gemUpgrades[8] == 1)
+		x = Math.round(x*1.25);
 	playerStats.exp += x;
-	var ss = "<span style='color:Fuchsia'>You gain "+x+" Experience Points!</span>";
-	if(playerStats.exp >= playerStats.tnl){
-		ss += "<br> "+levelUp();
+	var ss = ""
+	if(x > 0)
+		ss = "<br><span style='color:Fuchsia'>You gain "+formatNumber(x)+" Experience Points!</span>";
+	while(playerStats.exp >= playerStats.tnl){
+		levelUp();
 	}
 	return ss;
 }
 function levelUp(){
+	showGlowMenu("quest");
 	playerStats.level++;
-	playerStats.qlevel++;
-	playerStats.tnl = playerStats.level *100;
-	playerStats.exp = 0;
-	if(playerStats.level%5 == 0){
-		gainRandomStat();
+	playerStats.tnl = Math.floor(150+(Math.pow(Number(playerStats.level),2.1) * 100));
+	if(playerStats.gemUpgrades[12] == 1)
+		playerStats.tnl = Math.floor(playerStats.tnl * .9);
+	playerStats.Hp = playerStats.HpMax;
+	var ss = "";
+	if(playerStats.level%2 == 0){
+		if(playerStats.level >= 100){
+			if(playerStats.level%10 == 0){
+				ss = gainRandomStat(5);
+			}
+		}
+		else{
+			ss = gainRandomStat(1+(Math.floor(playerStats.level/20)));
+		}
 	} 
-	return "<br>You leveled up!";
+	setTimeout(function(){
+	addText("<br><br><span style='color:#00FF4A'>You leveled up! You are now level "+playerStats.level+"!"+ss+"</span>");
+	},playerStats.questTimer*1000*.1);
 }
-function gainRandomStat(){
+function getOldLevelReq(){
+	var retVal = Math.floor(150+(Math.pow(Number(playerStats.level-1),1.8) * 75));
+	if(playerStats.gemUpgrades[12] == 1)
+		retVal = Math.floor(playerStats.tnl * .85);
+	return retVal;
+}
+function getFullAttriName(x){
+	var retVal;
+	switch(x){
+		case("str"): retVal = "Strength"; break;
+		case("end"): retVal = "Endurance"; break;
+		case("stam"): retVal = "Stamina"; break;
+		case("dex"): retVal = "Dexterity"; break;
+		case("luck"): retVal = "Luck"; break;
+	}
+	return retVal;
+}
+function gainRandomStat(x){
+	x = genericScale(x,3);
 	var rng = Math.floor(Math.random()*9);
 	var stat = "";
 	if(rng == 8){
@@ -86,7 +136,19 @@ function gainRandomStat(){
 			case(3): stat = "dex"; break;
 		}
 	}
-	playerStats["p"+stat] ++;
+	playerStats["p"+stat] += x;
+	return "<br>You gained "+x+" "+getFullAttriName(stat)+"!";
+}
+function genericColor(x,y){
+	var color = getColor(Number(x)/Number(y));
+	var retVal ="";
+	if(color != "rainbow"){
+		retVal ="<span style=\"color:"+color+"\">"+x+"</span>";
+	}
+	else{
+		retVal ="<span class=\"rainbow-text\">"+x+"</span>";
+	}
+	return retVal;
 }
 function colorLevel(l){
 	l = Number(l);
@@ -105,13 +167,19 @@ function colorLevel(l){
 function colorXP(xp){
 	xp = Number(xp);
 	total = Number(playerStats.exp);
-	var color = getColor(1-total/xp);
+	var color = getColor(total/xp);
 	var retVal = "<span style=\"color:"+color+"\">"+formatNumber(xp-total)+"</span>";
 	return retVal;
 }
-function colorHp(hp){
+function colorHp(hp, b){
 	hp = Number(hp);
-	max = Number(playerStats.HpMax);
+	var max;
+	if(b){
+		max = Number(playerStats.HpMax);
+	}
+	else{
+		max = Number(playerStats.monHpMax);
+	}
 	var color = getColor(hp/max);
 	hp = formatNumber(hp);
 	var retVal;
@@ -132,19 +200,29 @@ function getColor(x){
 		case(x > .84 && x < 1): retVal = "#30AFE0"; break;
 		case(x > .59 && x <= .84): retVal = "#6A44DD"; break;
 		case(x > .45 && x <= .59): retVal = "#B4459D"; break;
-		case(x > .24 && x <= .45): retVal = "$D01E44"; break;
+		case(x > .24 && x <= .45): retVal = "#D01E44"; break;
 		case(x <= .24): retVal = "#FF0000"; break;
 	}
 	return retVal;
 }
+function newSlotCost(){
+	var retVal = 10000000;
+	retVal *= Math.pow(playerStats.slotsOwned,2);
+	return retVal;
+}
+function buyJewelSlot(){
+	var cost = newSlotCost();
+	if(playerStats.gems >= cost){
+		playerStats.gems -= cost;
+		playerStats.slotsOwned++;
+		buildEQSlots();
+	}
+}
 function buildEQSlots(){
-
 	for(var x = 0; x< 9; x++){
 		var c = getHighestRarityOfLine(x+23);
 		if(typeof c !== 'undefined'){
-			var rarity = (c.rarity-2);
-			if(rarity == 7)
-				rarity++;
+			var rarity = playerStats.slotsOwned;
 			var htmlString = "";
 			for(var y=0; y < rarity; y++){
 				htmlString+= "<div class='jewelSlot' ";
@@ -285,11 +363,15 @@ function getJewelCost(j,f){
 	if(f == 1)
 		frags = Math.floor(frags*.5);
 	
+	var divvy = 1;
+	if(playerStats.gemUpgrades[7] == 1)
+		divvy = 2;
+	
 	if(a == "onyx"){
 		var count = 1;
 		var fragHold = playerStats.fragVal*2.5;
 		while(frags > 0){
-			fragHold *= count;
+			fragHold *= (count/divvy);
 			frags -= fragHold;
 			if(frags >= 0){
 				count++;
@@ -301,7 +383,7 @@ function getJewelCost(j,f){
 		var count = 1;
 		var fragHold = playerStats.fragVal;
 		while(frags > 0){
-			fragHold *= count;
+			fragHold *= (count/divvy);
 			frags -= fragHold;
 			if(frags >= 0){
 				count++;
@@ -349,15 +431,15 @@ function breakGearDown(){
 			for(var y = 0; y < holder.length; y++){
 				var amtSplit = holder[y].split(";");
 				if(y == holder.length-1){
-					fragAmt += ((Number(amtSplit[0])-1) * (50+(25*Number(amtSplit[1]))) * getFact(Number(amtSplit[1])));
+					fragAmt += ((Number(amtSplit[0])-1) * (100+(25*Number(amtSplit[1]))) * getFact(Number(amtSplit[1])));
 					cardHolderAmt[Number(amtSplit[2])] = 1;
 				}
 				else{
-					fragAmt += ((Number(amtSplit[0])) * (50+(25*Number(amtSplit[1]))) * getFact(Number(amtSplit[1])));
+					fragAmt += ((Number(amtSplit[0])) * (100+(25*Number(amtSplit[1]))) * getFact(Number(amtSplit[1])));
 					cardHolderAmt[Number(amtSplit[2])] = 0;
 				}
 			}
-			fragAmt = Math.floor(fragAmt * (doRangeLuck(0,(playerStats.luck/2)*100 ,true)/100));
+			fragAmt = Math.floor(fragAmt * (doRangeLuck(0 + (100*playerStats.gemUpgrades[6]),(scaledLuck(playerStats.luck) + (2*playerStats.gemUpgrades[6]))*100 ,true)/100));
 			if(x == 23 || x == 27)
 				playerStats.rubyFragment += fragAmt;
 			if(x == 24 || x == 28)
@@ -401,7 +483,7 @@ function getStatTT(x){
 		case("Spd"):retVal = "How fast you can attack. This number is how many attacks a turn you do."; break;
 		case("Crit"):retVal = "You know when you hit someone's weak spot and you do extra damage? That's a Critical Hit. This is how often you'll land one of those hits.";break;
 		case("CDmg"):retVal = "What good is a Critical Hit if the damage is the same? This makes those Critical Hits juice!";break;
-		case("Armor"):retVal = "Armor reduces the damage you take by a flat amount. This is applied after Resist.";break;
+		case("Armor"):retVal = "Armor reduces the damage you take by a flat amount. It's less effective against consecutive hits. This is applied after Resist.";break;
 		case("Resist"):retVal = "Resist redcues the damage you take by a percentage. This is applied before Armor.";break;
 	}
 	return retVal;
@@ -410,60 +492,70 @@ function updateStats(){
 	
 	setGStats();
 	
+	playerStats.luck = 1;
+	playerStats.luck += playerStats.gluck + playerStats.pluck;
 	playerStats.luck += playerStats.goldUpgrades[14];
 	playerStats.luck += playerStats.catUpgrades[6];
 	
-	playerStats.luck += playerStats.gluck + playerStats.pluck;
+	playerStats.Str = playerStats.gstr + playerStats.pstr + (2* playerStats.gemUpgrades[0]) + (2* playerStats.gemUpgrades[4]) + (10* playerStats.gemUpgrades[11]);
 	
-	playerStats.Str += playerStats.gstr + playerStats.pstr;
+	playerStats.End = playerStats.gend + playerStats.pend + (2* playerStats.gemUpgrades[2]) + (2* playerStats.gemUpgrades[4]) + (10* playerStats.gemUpgrades[11]);
 	
-	playerStats.End += playerStats.gend + playerStats.pend;
+	playerStats.Stam = playerStats.gstam + playerStats.pstam + (2* playerStats.gemUpgrades[1]) + (2* playerStats.gemUpgrades[4]) + (10* playerStats.gemUpgrades[11]);
 	
-	playerStats.Stam += playerStats.gstam + playerStats.pstam;
+	playerStats.Dex = playerStats.gdex + playerStats.pdex + (2* playerStats.gemUpgrades[3]) + (2* playerStats.gemUpgrades[4]) + (10* playerStats.gemUpgrades[11]);
 	
-	playerStats.Dex += playerStats.gdex + playerStats.pdex;
+	var hasSensei = playerStats.catUpgrades[20];
 	
 	
-	playerStats.Dmg = Math.floor(playerStats.Str/2);
-	playerStats.HpMax = Math.floor(10 + (playerStats.Stam) + (Number(playerStats.level)*3));
-	playerStats.HpRegen = Math.floor(playerStats.Stam/2);
-	playerStats.Spd = 1+(playerStats.Dex/20);
-	playerStats.Crit = 5+(playerStats.Dex/15);
-	playerStats.CDmg = 150+(playerStats.Str/5);
-	playerStats.Armor = Math.floor(playerStats.End * 1.5);
-	playerStats.Resist = 1+(playerStats.End/3);
+	playerStats.Dmg = genericScale(Math.floor(1.5+genericScale((playerStats.Str *(1+(hasSensei*.3)))/2,50)+genericScale(playerStats.level/10,25)),300);
+	playerStats.HpMax = Math.floor(10 + ((playerStats.Stam*(1+(hasSensei*.3)))*4) + (Number(playerStats.level)*3));
+	playerStats.HpRegen = Math.round(.2+(playerStats.Stam*(1+(hasSensei*.3)))/10 * 100 + (Number(playerStats.level/3)))/100;
+	playerStats.Spd = genericScale(1+(genericScale((playerStats.Dex*(1+(hasSensei*.3)))/20,50))+(genericScale(playerStats.level/25,25)),50);
+	playerStats.Crit = critScale();
+	playerStats.CDmg = genericScale(Math.floor(150+(genericScale((playerStats.Str*(1+(hasSensei*.3)))/3,50))+(genericScale(playerStats.level/5,25))),400);
+	playerStats.Armor = genericScale(Math.round(.25+(playerStats.End*(1+(hasSensei*.3)))/1.35 + playerStats.level/4.5),700);
+	playerStats.Resist = scaleResist(5+((playerStats.End*(1+(hasSensei*.3)))/2)+playerStats.level/3.5,false);
 	
 	
 	playerStats.gdex = playerStats.gstam = playerStats.gend = playerStats.gstr = playerStats.gluck = 
 	playerStats.gHpMax = playerStats.gRegen = playerStats.gDmg = playerStats.gAs = 
 	playerStats.gCc = playerStats.Gcd = playerStats.gArmor = playerStats.gResist = 0;
 }
-function scaleArmor(a, mob){
+function critScale(){
+	var hasSensei = playerStats.catUpgrades[20];
+	var retVal = genericScale(5*(1+((genericScale((playerStats.Dex*(1+(hasSensei*.3))),150)/25)+(genericScale(playerStats.level,50)/250))),75);
+	retVal = retVal>100?100:retVal;
+	return retVal;
+}
+function genericScaleNoFloor(val, amt){
 	var retVal;
-	if(mob){
-		var reducs = Math.floor(a/500);
-		if(reducs > 0){
-			retVal = 500;
-			a -= 500;
-			for(var x=0; x<reducs; x++){
-				a /= 2;
-				reducs = Math.floor(a/500);
-				if(reducs > 0){
-					a -= 500;
-					retVal += 500;
-					x = -1;
-				}
-			}
-			retVal += a;
-		}
-		else{
-			retVal = a;
-		}
+	if(Math.floor(val/amt)>0){
+		retVal = amt+genericScaleNoFloor(((val-amt)/2),amt);
 	}
 	else{
-		retVal = a;
+		retVal = val;
 	}
-	return Math.floor(retVal); 
+	return (retVal);
+}
+function genericScale(val, amt){
+	var retVal;
+	if(Math.floor(val/amt)>0){
+		retVal = amt+genericScale(((val-amt)/2),amt);
+	}
+	else{
+		retVal = val;
+	}
+	return Math.floor(retVal);
+}
+function scaleSpeed(s, mob){
+	var retVal;
+	if(mob){
+		retVal = s*(1/(1+(Math.pow(Math.E,(-1*s/500)))));
+	}
+	if(s <= 4 && s > 1)
+		retVal++;
+	return Math.round(retVal);
 }
 function scaleResist(r, mob){
 	var retVal;
@@ -472,15 +564,24 @@ function scaleResist(r, mob){
 	}
 	else{
 		var sVal = 50;
-		if(playerStats.level > 10)
+		if(playerStats.level > 100)
 			sVal = 100;
-		if(playerStats.level > 25)
+		if(playerStats.level > 1000)
 			sVal = 200;
-		if(playerStats.level > 35)
+		if(playerStats.level > 10000)
 			sVal = 400;
 		retVal = Math.round((1 - sVal/(sVal + r))*10000)/100;
 	}
 	return retVal;
+}
+function autoPotion(){
+	$('#autoPotion').text("Off");
+	if(playerStats.autoPotion)
+		playerStats.autoPotion = false;
+	else
+		playerStats.autoPotion = true;
+	if(playerStats.autoPotion)
+		$('#autoPotion').text("On");
 }
 function setGStats(){
 	for(var x=0; x<9;x++){

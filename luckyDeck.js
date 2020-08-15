@@ -1,5 +1,5 @@
 var endTime;
-var ver_num = 0.1;
+var ver_num = 0.2;
 var bil = 1000000000;
 var timeValue = [0, "none"];
 var higherTax = 1;
@@ -7,6 +7,7 @@ var higherMort = 1;
 var interval;
 var attriArray=["Str","Dex","Stam","End","luck","HpMax","HpRegen","Dmg","Spd","Crit","CDmg","Armor","Resist"];
 var jholder;
+var roomStats = new Object();
 var playerStats = {
 	turns: 0,
 	goldAverage: [],
@@ -16,6 +17,7 @@ var playerStats = {
 	cat: 0,
 	eagle: 1,
 	lastEagle: 1,
+	passed: true,
 	cat_multi: 1,
 	cps: 0,
 	cps_multi: 1,
@@ -29,6 +31,9 @@ var playerStats = {
 	gemBuyAmt: 1,
 	cardsOwned: 0,
 	cardsOwnedTotal: 0,
+	canQuest: false,
+	runQuest: false,
+	autoPotion: false,
 	avgGPS: 0,
 	avgCPS: 0,
 	avgGMPS: 0,
@@ -38,21 +43,29 @@ var playerStats = {
 	qcompleted: 0,
 	qroomMax: 0,
 	qroom: 0,
+	qcompletedLvl: 0,
+	isBoss: false,
 	inCombat: false,
 	monster: "",
-	monNam: "",
+	monName: "",
+	dead: false,
 	monHp: 0,
+	monHpMax: 0,
 	monCDmg: 0,
 	monDmg: 0,
 	monSpd: 0,
 	monArmor: 0,
 	monResist: 0,
+	monLevel: 0,
+	monSwing: "",
 	keys: 0,
 	maps: 0,
 	bombs: 0,
 	bigKey: 0,
+	potions: 0,
 	qName: "",
-	roomweight: [100,15,40,20,25,25,25,25,25,15,30,150,15,5,50,45,3,12,30,20,15],
+	roomweight: [100,15,40,20,25,25,25,25,25,15,30,150,15,5,50,35,3,12,20,20,15,35],
+	firstQuest: true,
 	exp: 0,
 	tnl: 100,
 	luck: 1,
@@ -87,12 +100,14 @@ var playerStats = {
 	gArmor: 0,
 	Resist: 1,
 	gResist: 0,
+	catArmor: 0,
 	rubyFragment: 0,
 	onyxFragment: 0,
 	emeraldFragment: 0,
 	topazFragment: 0,
 	amethystFragment: 0,
 	fragVal: 4500,
+	slotsOwned: 1,
 	helmet:[],
 	sword:[],
 	chest:[],
@@ -108,14 +123,20 @@ var playerStats = {
 				   0,0,0,0,0,0,0,0,0,0,
 				   0],
 	catUpgrades: [0,0,0,0,0,0,0,0,0,0,
-				  0,0,0,0,0,0],
+				  0,0,0,0,0,0,0,0,0,0,
+				  0],
+	gemUpgrades: [0,0,0,0,0,0,0,0,0,0,
+				  0,0,0,0,0],
 	unlockGUpgrades: [1,1,0,0,0,1,0,0,0,0,
 				      0,0,0,0,0,0,0,0,0,0,
 					  0,0,0,0,0,0,0,0,0,0,
 					  0],
 	unlockCUpgrades: [1,0,1,1,0,0,1,0,0,0,
-					  0,0,0,0,0,0],
-	unlockChecker:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25],
+					  0,0,0,0,0,0,0,0,0,0,
+					  0],
+	unlockGemUpgrades: [0,0,0,0,0,0,0,0,0,0,
+						0,0,0,0,0],
+	unlockChecker:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30],
 	buyAmount: 1,
 	packMulti: 1.03,
 	packsBought: 0,
@@ -182,13 +203,14 @@ playerStats.goldAverage.fill(0);
 playerStats.catAverage.fill(0);
 playerStats.gemAverage.fill(0);
 
+
 var targetProxy = new Proxy(playerStats, {
 	set: function (target, key, value){
 		console.log(`${key} set to ${value}`);
 		target[key] = value;
 		return true;
 	}
-});
+}); 
 
 function pageInit(){
 	endTime = Date.now() + 1000;
@@ -196,13 +218,30 @@ function pageInit(){
 	saveLoop(10);
 	perMinInterval = setInterval(calcPerSec, 1000);
 	startGame();
-	createRandomCard(1);
+	if(!(cardHolderAmt[1] >0))
+		createRandomCard(1);
+	if(playerStats.buyAmount == 0)
+		$('#buyAmount').text("x Max");
+	if(playerStats.autoPotion)
+		$('#autoPotion').text("On");
+	
 //	oneOfEvery();
 	populateUpgrades();
 	updateGameDisplay();
 }
 function startGame(){
 	mainTick(1);
+	if(!playerStats.firstQuest){
+		if(playerStats.runQuest)
+			startQuest();
+		if(playerStats.canQuest && !(playerStats.runQuest))
+			newQuest();
+	}
+	else{
+		$('#firstQuestMessage').show();
+	}
+	
+		
 }
 function saveLoop(x){
 	var saveTime = Date.now() + (x * 1000);
@@ -306,7 +345,10 @@ function updateGameDisplay(){
 		$('#gemMenuSelector').show();
 		showGemBuildings();
 	}
-	if(playerStats.catUpgrades[15] == 1 && playerStats.goldUpgrades[30] == 1){
+	if(playerStats.canQuest){
+		$('#playerMenuSelector').show();
+		$('#jewelMenuSelector').show();
+		$('#questMenuSelector').show();
 		showPlayerBuildings();
 		showQuestBuildings();
 	}
@@ -343,6 +385,8 @@ function calculateEagle(gs){
 		if(playerStats.catUpgrades[9] == 1){
 			reduc *= (1+Math.pow(playerStats.cat,.03)*(playerStats.cat/1000000)) * playerStats.catEagleReduc;
 		}
+		if(playerStats.gemUpgrades[9] == 1)
+			reduc *= (genericScale(playerStats.qcompleted,10)/10);
 		reduc *= playerStats.gemEagleVal;
 		if(powDif >= 2){
 			reduc /= 20;
@@ -351,6 +395,8 @@ function calculateEagle(gs){
 			reduc /= 25;
 		}
 		var effGS = (gs-(minVal))/reduc;
+		//700 effGS = 50% reduction
+		
 		retVal = Math.round(Math.pow(.999,(effGS))*10000)/10000;
 	}
 	if(retVal == 0)
@@ -414,26 +460,29 @@ function applyGainsThisTick(){
 		addGem(playerStats.geps);
 }
 function addGold(g, t){
-	playerStats.gold += Number(g);
+	g = Math.floor(Number(g));
+	playerStats.gold += g;
 	playerStats.totalGoldEarned += Number(playerStats.gps);
 	
 	if(!t)
-		playerStats.goldAverage[0] += Number(g);
+		playerStats.goldAverage[0] += g;
 	
 }
 function addCat(c, t){
-	playerStats.cat += Number(c);
+	c = Math.floor(Number(c));
+	playerStats.cat += c;
 	playerStats.totalCatEarned += Number(playerStats.cps);
 	
 	if(!t)
-		playerStats.catAverage[0] += Number(c);
+		playerStats.catAverage[0] += c;
 }
 function addGem(g, t){
-	playerStats.gems += Number(g);
+	g = Math.floor(Number(g));
+	playerStats.gems += g;
 	playerStats.totalGemEarned += Number(playerStats.geps);
 	
 	if(!t)
-		playerStats.gemAverage[0] += Number(g);
+		playerStats.gemAverage[0] += g;
 }
 function calcPerSec(){
 	playerStats.goldAverage.pop();
@@ -799,6 +848,7 @@ function getLuckPercent(percent){
 
 function scaledLuck(l){
 	var retVal = l*(1 - (l/(25+Math.abs(l))));
+	retVal = genericScale(retVal, 10);
 	return Math.floor(1+retVal);
 }
 function doLuck(percent){
@@ -843,15 +893,8 @@ function doRangeLuck(lower, upper, type){
 }
 
 function showGlowMenu(t){
-	if(t == "cat"){
-		if(!$('#catProducers').is(':visible')){
-			$('#catMenuGlow').show();
-		}
-	}
-	if(t == "gold"){
-		if(!$('#goldProducers').is(':visible')){
-			$('#goldMenuGlow').show();
-		}
+	if(!$('#'+t+'Producers').is(':visible')){
+		$('#'+t+'MenuGlow').show();
 	}
 }
 
@@ -875,29 +918,49 @@ function hideAllMenu(){
 }
 
 function saveGame(){
+	
+	var fullSave = JSONfn.stringify(playerStats)+"~"+JSONfn.stringify(cardHolderAmt)+"~"+JSONfn.stringify(endTime)+"~"+JSONfn.stringify(ver_num);
+	
+	fullSave = btoa(fullSave);
+	localStorage.setItem("luckySave", fullSave);
+	
 	localStorage.setItem("player", JSONfn.stringify(playerStats));
-//	localStorage.setItem("card", JSONfn.stringify(cardHolder));
+
 	localStorage.setItem("cardH", JSONfn.stringify(cardHolderAmt));
 	localStorage.setItem("lastTick", JSONfn.stringify(endTime));
 	localStorage.setItem("version", JSONfn.stringify(ver_num));
 }
 function loadGame(){
 	var ver_hold = "";
-	if(localStorage.getItem("player")){
-		
-		var ps = JSONfn.parse(localStorage.getItem("player"));
+	
+	if(localStorage.getItem("luckySave")){
+		var fullSave = atob(localStorage.getItem("luckySave"));
+		fullSave = fullSave.split("~");
+		var ps = JSONfn.parse(fullSave[0]);
 		var holder = Object.assign({}, playerStats, ps);
 		playerStats = holder;
+		cardHolderAmt = JSONfn.parse(fullSave[1]);
+		endTime = JSONfn.parse(fullSave[2]);
+		ver_hold = JSONfn.parse(fullSave[3]);
 		
 	}
-//	if(localStorage.getItem("card"))
-//		cardHolder = JSONfn.parse(localStorage.getItem("card"));
-	if(localStorage.getItem("cardH"))
-		cardHolderAmt = JSONfn.parse(localStorage.getItem("cardH"));
-	if(localStorage.getItem("lastTick"))
-		endTime = JSONfn.parse(localStorage.getItem("lastTick"));
-	if(localStorage.getItem("version"))
-		ver_hold = JSONfn.parse(localStorage.getItem("version"));
+	else{
+		if(localStorage.getItem("player")){
+		
+			var ps = JSONfn.parse(localStorage.getItem("player"));
+			var holder = Object.assign({}, playerStats, ps);
+			playerStats = holder;
+		
+		}
+
+		if(localStorage.getItem("cardH"))
+			cardHolderAmt = JSONfn.parse(localStorage.getItem("cardH"));
+		if(localStorage.getItem("lastTick"))
+			endTime = JSONfn.parse(localStorage.getItem("lastTick"));
+		if(localStorage.getItem("version"))
+			ver_hold = JSONfn.parse(localStorage.getItem("version"));
+	}
+
 	
 	if(ver_num != ver_hold){
 		applyVersionUpdates(ver_hold);
@@ -910,7 +973,26 @@ function resetGame(){
 }
 
 function applyVersionUpdates(vh){
-
+if(vh == 0.1){
+	for(var t=26; t<36;t++){
+	playerStats.unlockChecker.push(t);
+	}
+	for(var t=0; t<5; t++){
+		playerStats.unlockCUpgrades.push(0);
+		playerStats.catUpgrades.push(0);
+	}
+	if(!playerStats.unlockChecker.includes(25)){
+		playerStats.canQuest = true; 
+		playerStats.Hp = playerStats.HpMax; 
+		$('#firstQuestMessage').show();
+		showGlowMenu("player");
+		showGlowMenu("jewel");
+		showGlowMenu("quest");
+		$('#playerMenuSelector').show();
+		$('#jewelMenuSelector').show();
+		$('#questMenuSelector').show();
+	}
+}
 
 //for future use
 

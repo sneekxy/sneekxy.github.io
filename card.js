@@ -52,6 +52,9 @@ function createRandomCard(spec){
 		if(spec == 4){
 			var c = new card(rareCards[15]);
 		}
+		if(spec == 5){
+			var c = new card(rareCards[Math.floor(Math.random()*9+15)]);
+		}
 		addCards(c, 1);
 	}
 	playerStats.cardsOwned = getCardCount();
@@ -168,6 +171,9 @@ function getHighestRarityOfLine(ugl){
 		return 0;
 	});
 	return cardList[0];
+}
+function getHighestRarityValOfLine(ugl){
+	return getHighestRarityOfLine(ugl).rarity;
 }
 function getCardAmtOfLine(ugl){
 	var retVal = 0;

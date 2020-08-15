@@ -3,6 +3,8 @@ function populateUpgrades(){
 	$("#goldUpgradeBought").empty();
 	$("#catUpgrade").empty();
 	$("#catUpgradeBought").empty();
+	$("#gemUpgrade").empty();
+	$("#gemUpgradeBought").empty();
 	var upgCopy = playerStats.goldUpgrades.slice();
 	upgCopy.forEach(function(value, index){
 		var showUpg = true;
@@ -57,7 +59,33 @@ function populateUpgrades(){
 				var oldVal = $("#catUpgradeBought").html();
 				$("#catUpgradeBought").html(oldVal+st);
 			}
+		}
+	});
+	
+	var upgCopy = playerStats.gemUpgrades.slice();
+	upgCopy.forEach(function(value, index){
+		var showUpg = true;
+		if(playerStats.unlockGemUpgrades[index] != 1)
+			showUpg = false;
+		if(showUpg){
+			if(value == 0){
+				var upgSt = gemUpgrades[index];
+				upgSt = upgSt.split(";");
+				var costType = getCostType(upgSt[4]);
+				var st = "<div id='gemupgrade"+index+"' class='upgradeItem' style='background-image:url(\"art/upg/gemUpg"+index+".png\");' onClick='buyUpgrade("+upgSt[0]+","+upgSt[3]+",\""+upgSt[4]+"\")'>"
+				+"<span class='tooltip'>"+upgSt[1]+"<hr class='black'><br>"+upgSt[2]+"<br>Cost: "+formatNumber(Number(upgSt[3]))+" "+costType+"</span></div>";
+				var oldVal = $("#gemUpgrade").html();
+				$("#gemUpgrade").html(oldVal+st);
 			}
+			else{
+				var upgSt = gemUpgrades[index];
+				upgSt = upgSt.split(";");
+				var st = "<div id='gemupgrade"+index+"holder' class='upgradeItemBoughtHolder'><span id='gemupgrade"+index+"' class='upgradeItemBought' style='background-image:url(\"art/upg/gemUpg"+index+".png\");'>"
+				+"</span><span class='tooltip'>"+upgSt[1]+"<hr class='black'><br>"+upgSt[2]+"</span></div>";
+				var oldVal = $("#gemUpgradeBought").html();
+				$("#gemUpgradeBought").html(oldVal+st);
+			}
+		}
 	});
 	
 }
@@ -103,6 +131,28 @@ function buyUpgrade(id, cost, costType){
 			if(id == 13){
 				backFillGemCards();
 			}
+			if(id == 16){
+				playerStats.catArmor = 1;
+			}
+			if(id == 19){
+				playerStats.questReward *= 1.5;
+			}
+		}
+	}
+	if(costType == "m"){
+		if(playerStats.gems >= cost){
+			playerStats.gems -= cost;
+			playerStats.gemUpgrades[id] = 1;
+			if(id == 5)
+				playerStats.questTimer *= .9;
+			if(id == 7)
+				playerStats.fragVal *= .5;
+			if(id == 12){
+				playerStats.tnl = Math.floor(playerStats.tnl * .9);
+				gainXP(0);
+			}
+			if(id == 13)
+				playerStats.questTimer *= .85;
 		}
 	}
 	populateUpgrades();
@@ -113,6 +163,7 @@ function getCostType(s){
 	switch(s){
 		case("g"): retVal = "Gold"; break;
 		case("c"): retVal = "Cats"; break;
+		case("m"): retVal = "Gems"; break;
 	}
 	return retVal;
 }
@@ -120,6 +171,7 @@ function getCostType(s){
 function checkUpgrades(){
 	var catU = 0;
 	var goldU = 0;
+	var gemU = 0;
 	for(var x = playerStats.unlockChecker.length-1; x >= 0; x--){
 		switch(playerStats.unlockChecker[x]){
 			case(1): if(hasCardOfLine(2)){ playerStats.unlockGUpgrades[2] = 1; goldU+=1;playerStats.unlockChecker.splice(x,1);} break; 
@@ -149,17 +201,36 @@ function checkUpgrades(){
 			case(22): if(playerStats.gemsBought >= 50){playerStats.unlockCUpgrades[14] = 1; catU+=1; playerStats.unlockChecker.splice(x,1);} break;
 			case(23): if(playerStats.gemsBought >= 150){playerStats.unlockGUpgrades[30] = 1; goldU+=1; playerStats.unlockCUpgrades[15] = 1; catU+=1; playerStats.unlockChecker.splice(x,1);} break;
 			case(24): if(playerStats.goldUpgrades[30] == 1 || playerStats.catUpgrades[15] == 1){playerStats.rareEnable = 1; playerStats.unlockChecker.splice(x,1);} break;
-			case(25): if(playerStats.goldUpgrades[30] == 1 && playerStats.catUpgrades[15] == 1){createRandomCard(4); playerStats.unlockChecker.splice(x,1);}break;
+			case(25): if(playerStats.goldUpgrades[30] == 1 && playerStats.catUpgrades[15] == 1){createRandomCard(4);playerStats.canQuest = true; playerStats.Hp = playerStats.HpMax; $('#firstQuestMessage').show();
+			showGlowMenu("player");showGlowMenu("jewel");showGlowMenu("quest"); playerStats.unlockChecker.splice(x,1)
+			$('#playerMenuSelector').show();
+			$('#jewelMenuSelector').show();
+			$('#questMenuSelector').show();}break;
+			case(26): if(playerStats.level >= 10){playerStats.unlockGemUpgrades[0] = 1;playerStats.unlockGemUpgrades[1] = 1;playerStats.unlockGemUpgrades[2] = 1;playerStats.unlockGemUpgrades[3] = 1; gemU+=1; playerStats.unlockChecker.splice(x,1);}break;
+			case(27): if(playerStats.qcompleted >= 50 && playerStats.level >= 20){playerStats.unlockGemUpgrades[5] = 1;playerStats.unlockGemUpgrades[6] = 1;playerStats.unlockGemUpgrades[7] = 1;playerStats.unlockGemUpgrades[8] = 1;gemU+=1; playerStats.unlockChecker.splice(x,1);}break;
+			case(28): if(playerStats.qcompleted >= 100 && playerStats.level >= 33){playerStats.unlockGemUpgrades[9] = 1;gemU+=1; playerStats.unlockChecker.splice(x,1);}break;
+			case(29): if(playerStats.qcompleted >= 250 && playerStats.level >= 65){playerStats.unlockGemUpgrades[10] = 1;gemU+=1; playerStats.unlockGemUpgrades[11] = 1; playerStats.unlockGemUpgrades[12] = 1; playerStats.unlockGemUpgrades[13] = 1; playerStats.unlockGemUpgrades[14] = 1; playerStats.unlockChecker.splice(x,1);}break;
+			case(30): if(playerStats.level >= 15){gemU+=1; playerStats.unlockGemUpgrades[4] = 1; playerStats.unlockChecker.splice(x,1);}break;
+			case(31): if(playerStats.level >= 15){catU+=1; playerStats.unlockCUpgrades[16] = 1; playerStats.unlockChecker.splice(x,1);} break;
+			case(32): if(playerStats.level >= 25){catU+=1; playerStats.unlockCUpgrades[17] = 1; playerStats.unlockChecker.splice(x,1);} break;
+			case(33): if(playerStats.level >= 35){catU+=1; playerStats.unlockCUpgrades[18] = 1; playerStats.unlockChecker.splice(x,1);} break;
+			case(34): if(playerStats.level >= 45){catU+=1; playerStats.unlockCUpgrades[19] = 1; playerStats.unlockChecker.splice(x,1);} break;
+			case(35): if(playerStats.level >= 55){catU+=1; playerStats.unlockCUpgrades[20] = 1; playerStats.unlockChecker.splice(x,1);} break;
+			
+		
 		}
 		
 
 	}
-	if(catU > 0 || goldU > 0){	
+	if(catU > 0 || goldU > 0 || gemU > 0){	
 		if(catU > 0){
 			showGlowMenu("cat");
 		}
 		if(goldU > 0){
 			showGlowMenu("gold");
+		}
+		if(gemU > 0){
+			showGlowMenu("gem");
 		}
 		populateUpgrades();
 	}
@@ -199,7 +270,7 @@ var gUpgrades = [
 "27;New Shades;Marty has .10% more effectiveness per level;90000000;g",
 "28;Better RNG;Gives 8 cat cards. Just in case you aren't lucky;200000000;g",
 "29;Buy More Cats;Unlocks two new cat cards! Time to buy more cards!;10000000000;g",
-"30;Rare Cards;Unlocks RARE gold cards! When combined with Rare Cats, new cards will be unlocked!(You get one for free!);1000000000000;g",
+"30;Rare Cards;Unlocks RARE gold cards! When combined with Rare Cats, new cards will be unlocked!(You get one for free!);500000000000;g",
 ];
 var cUpgrades = [
 "0;Herd the Pack;Why stop at just cat food? Unlocks more cat producing cards!;1000;c",
@@ -217,5 +288,27 @@ var cUpgrades = [
 "12;Scavenge;Cats will bring home gems. Maybe gems can be exchanged for some really nice stuff? or not only one way to find out;2000000;c",
 "13;Diamond Cats;Buying Gem cards now give an extra Gem card(You gain an additional Gem card for each previously bought Gem card too!);10000000;c",
 "14;Diamond Claws;Sharp claws make sharp deals. Gem cards are half price and scale slower!!;250000000;c",
-"15;Rare Cats;Unlocks RARE cats. When combined with Rare Cards, new cards will be unlocked!(You get one for free!);800000000;c",
+"15;Rare Cats;Unlocks RARE cats. When combined with Rare Cards, new cards will be unlocked!(You get one for free!);700000000;c",
+"16;Cat Mercenaries;Turn your cats into mercenaries that fight for you! The first time you are defeated on a quest the mercenaries will sacrifice themselves for you.;2000000000;c",
+"17;Cat Alchemists;Train some cats to become Alchemists that increase the effect of potions by 100%!;3000000000;c",
+"18;Cat Explorer;These cats are master explorers and will teach you their secrets! You have a 10% chance of finding extra Keys, Big Keys, Maps, Bombs, and Potions!;4000000000;c",
+"19;Cat Merchants;Teach some cats the masterful art of selling. They will increase the yield from quest rewards(excluding Jewel Fragments) by 50%!;5000000000;c",
+"20;Cat Sensei;Train cats to become your trainer??? They will show you how to properly utilize your attributes, increasing their effect!;6000000000;c",
+];
+var gemUpgrades = [
+"0;Strength Injection;Use your Gems to buy some legal drugs that give you +2 Strength!;2000000;m",
+"1;Stamina Powder;One sniff of this 'approved' powder will give you huge burst of Stamina! +2 Stamina infect.;2000000;m",
+"2;Endurance Pill;Take 1 pill every day for long lasting endurance everywhere! Do not take more than 1 pill a day! +2 Endurance.;2000000;m",
+"3;Dexterity Juice;One sip is all it takes to speed you up so fast everything else seems to slow down! +2 Dexterity, don't tell anyone you have this.;2000000;m",
+"4;Wonder Stick;Light this up and suck in the fumes. If you're into that kind of thing. It'll give you a pretty big boost though! +2 to all Attributes!;10000000;m",
+"5;Better Shoes;Upgrade your shoes so you can quest faster! Questing is 10% faster;20000000;m",
+"6;Anvil; With an anvil you'll be more efficient in breaking down armor cards. Thus giving you more fragments!;30000000;m",
+"7;Super Glue;Putting jewel fragments together is a pain, but with Super Glue you'll be able to create more powerful jewels with less fragments!;40000000;m",
+"8;EXP Stone;This magical stone will increase the amount of Experience Points you gain by 25%.;50000000;m",
+"9;Combat Expertise;All this time questing has made you an effective battling machine. Eagles are reduced based on the number of completed quests.;60000000;m",
+"10;Deeper Dungeons;Dungeons deeper underground give better rewards. Now your rewards within dungeons are increased by 20%.;100000000;m",
+"11;Crown of Wonder;Spooky powerful crown will make you spooky powerful! +10 to all Attributes.;200000000;m",
+"12;Power Leveling;Reduces the Experience Points required per level by 15%, this is retroactive!;500000000;m",
+"13;Running in the;Why walk when you can run? Questing is 15% faster!;900000000;m",
+"14;Mimic Detection;You're better at telling which treasure chests have better rewards! (Did you know quest rewards are tiered?) +1 to the minimum tier of quest rewards!;1500000000;m",
 ];

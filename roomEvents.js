@@ -1,17 +1,17 @@
 var roomEvents = {
 	combat:function(){
-		return "no combat yet";
+		return enterCombat(0);
 	},
 	treasure:function(){
 		var ss = "Walking into the room, you discover a treasure chest! You open it up.";
 		var tt = "";
 		var treward = Math.floor(Math.random()*(7-2)+2);
 		if(playerStats.bigKey > 0){
-			playerStats.bigKey --;
+			questLoseBKey();
 			tt += "<br><span style='color:green'>The Big Key you were dragging around started to vibrate and disappeared! But it looks like the treasure chest has better rewards now!</span>";
 			treward += (Math.floor(Math.random()*(4-1)+1));
 		}
-		switch(Math.floor(Math.random()*3)){
+		switch(Math.floor(Math.random()*4)){
 			case(0): var tVal = goldReward(treward);
 			tt += "<br>What luck! Inside the chest is <span style='color:gold'>"+formatNumber(tVal)+" Gold!</span> Don't spend it all in one place.";
 			questRGold(tVal);
@@ -23,6 +23,11 @@ var roomEvents = {
 			case(2): var tVal = gemReward(treward);
 			tt += "<br>BLING BLING BLING! YOU'RE THE GEM KING. THE CHEST CONTAINED <span style='color:cyan'>"+formatNumber(tVal)+" GEMS.</span> BLING BLING!";
 			questRGem(tVal);
+			break;
+			case(3): var tVal = fragReward(treward);
+			tt += "<br>Oh Sweet! You open the chest and are showered with <span style='color:'color:#DC7AA3'>"+formatNumber(tVal)+" Jewel Fragments!</span>";
+			questRFrag(tVal);
+			break;
 		}
 		quest2Text(tt);
 		return ss;
@@ -31,13 +36,13 @@ var roomEvents = {
 		var ss = "You stumble upon a locked door."
 		var tt = "";
 		if(playerStats.keys > 0){
-			playerStats.keys --;
+			questLoseKey();
 			tt += "<br> You rummage through your bags and pull out a key. <span style='color:green'>*click*</span> The door opens!"
 			var rng = Math.floor(Math.random()*7);
 			var keyBonus = 0;
 			if(playerStats.bigKey > 0){
-				playerStats.bigKey --;
-				tt += "<br><span style='color:green'>The Big Key you were dragging around started to vibrate and disappeared! But it looks like the treasure chest has better rewards now!</span>";
+				questLoseBKey();
+				tt += "<br><span style='color:green'>The Big Key you were dragging around started to vibrate and disappeared! But it looks like the room has been magically enhanced!</span>";
 				keyBonus += (Math.floor(Math.random()*3));
 				rng = 6;
 			}
@@ -80,15 +85,25 @@ var roomEvents = {
 			case(3):ss = "Entering the room you see a key hanging up on the wall. You take it, it could be useful later.";break;
 			case(4):ss = "You walk into the magical room and magically a key appears inside your bags. Cool!";break;
 		}
-		tt = "<br><span style='color:green;>You got a key!</span>";
+		var amt = 1;
+		if(playerStats.catUpgrades[18] == 1){
+			if(doLuck(10))
+				amt = 2;
+		}
+		if(amt == 1)
+			tt = "<br><span style='color:green'>You got a key!</span>";
+		else
+			tt = "<br><span style='color:green'>You got <span class=\"rainbow-text\">two</span> keys! Nice!</span>";
 		quest2Text(tt);
-		playerStats.keys ++;
+		questGetKey(amt);
 		return ss;
 	},
 	strcheck:function(){
 		var ss = "";
 		var tt = "";
-		var target = Math.floor(2 + playerStats.qlevel* Math.pow(playerStats.qlevel, .1) * (Math.random()*(1.5-.5)+.5));
+		var target = Math.floor(2 + playerStats.qlevel* Math.pow(playerStats.qlevel, .1) * (Math.random()*(1.2-.2)+.2));
+		var rolled = doRangeLuck(1,getRandomRange((playerStats.Str+playerStats.level),1.25),true);
+		target = doRangeLuck(2,target,false);
 		switch(Math.floor(Math.random()*4)){
 			case(0): ss = "There is a giant wall in this room. It looks like there's something behind it. Maybe you're strong enough to break down the wall?"; break;
 			case(1): ss = "You find a box on the ground, it looks heavy. Let's see if you are strong enough to lift it up and see what's under there!";break;
@@ -96,10 +111,10 @@ var roomEvents = {
 			case(3): ss = "In the room you see a barbell and a guy standing next to it. He says with a Brooklyn accent \"Dis ting is "+formatNumber(target*10)+" pounds. Okay? Do yuh tink yuh can lift it, or what?\" Well, do ya?";break;
 		}
 		var tcol = "red";
-		if(playerStats.Str >= target)
+		if(rolled >= target)
 			tcol = "green";
-		tt += "<br><br>Strength required to pass: <span style='color:red'>"+target+"</span><br>Your Strength: <span style='color:"+tcol+"'>"+playerStats.Str+"</span><br>";
-		if(playerStats.Str >= target){
+		tt += "<br><br>Strength required to pass: <span style='color:red'>"+target+"</span><br>Your Strength roll: <span style='color:"+tcol+"'>"+rolled+"</span><br>";
+		if(rolled >= target){
 			var re = getRandomReward().split(";");
 			var tVal = Number(re[0]);
 			var tType = re[1];
@@ -108,6 +123,7 @@ var roomEvents = {
 				case("Gold"): questRGold(tVal); color = "gold";break;
 				case("Cats"): questRCat(tVal); color = "sandybrown"; break;
 				case("Gems"): questRGem(tVal); color = "cyan"; break;
+				case("Jewel Fragments"): questRFrag(tVal); color = "#DC7AA3"; break;
 			}
 			tt += "<br><span style='color:green'>SUCCESS!</span> You showed your strength and have been rewarded. You earned <span style='color:"+color+"'>"+formatNumber(tVal)+" "+tType+"!</span>";
 		}
@@ -120,7 +136,9 @@ var roomEvents = {
 	stamcheck:function(){
 		var ss = "";
 		var tt = "";
-		var target = Math.floor(2 + playerStats.qlevel* Math.pow(playerStats.qlevel, .1) * (Math.random()*(1.5-.5)+.5));
+		var target = Math.floor(2 + playerStats.qlevel* Math.pow(playerStats.qlevel, .1) * (Math.random()*(1.2-.2)+.2));
+		var rolled = doRangeLuck(1,getRandomRange((playerStats.Stam+playerStats.level),1.25),true);
+		target = doRangeLuck(2,target,false);
 		switch(Math.floor(Math.random()*4)){
 			case(0): ss = "Inside the room is a large track circle. A sign says if you can do "+formatNumber(target)+" laps without stopping you'll be rewarded. Get to it!"; break;
 			case(1): ss = "As you enter the room a giant boulder falls behind you and starts to give chase! Run run run!";break;
@@ -128,10 +146,10 @@ var roomEvents = {
 			case(3): ss = "Entering the room you see a ton of boxes. Your mom asks for help moving all the boxes to the other side of the room. You can't tell your mom no.";break;
 		}
 		var tcol = "red";
-		if(playerStats.Stam >= target)
+		if(rolled >= target)
 			tcol = "green";
-		tt += "<br><br>Stamina required to pass: <span style='color:red'>"+target+"</span><br>Your Stamina: <span style='color:"+tcol+"'>"+playerStats.Stam+"</span><br>";
-		if(playerStats.Stam >= target){
+		tt += "<br><br>Stamina required to pass: <span style='color:red'>"+target+"</span><br>Your Stamina roll: <span style='color:"+tcol+"'>"+rolled+"</span><br>";
+		if(rolled >= target){
 			var re = getRandomReward().split(";");
 			var tVal = Number(re[0]);
 			var tType = re[1];
@@ -140,6 +158,7 @@ var roomEvents = {
 				case("Gold"): questRGold(tVal); color = "gold";break;
 				case("Cats"): questRCat(tVal); color = "sandybrown"; break;
 				case("Gems"): questRGem(tVal); color = "cyan"; break;
+				case("Jewel Fragments"): questRFrag(tVal); color = "#DC7AA3"; break;
 			}
 			tt += "<br><span style='color:green'>SUCCESS!</span> Your high stamina allowed you to withstand the ordeal and you passed. You earned <span style='color:"+color+"'>"+formatNumber(tVal)+" "+tType+"!</span>";
 		}
@@ -152,18 +171,20 @@ var roomEvents = {
 	dexcheck:function(){
 		var ss = "";
 		var tt = "";
-		var target = Math.floor(2 + playerStats.qlevel* Math.pow(playerStats.qlevel, .1) * (Math.random()*(1.5-.5)+.5));
+		var target = Math.floor(2 + playerStats.qlevel* Math.pow(playerStats.qlevel, .1) * (Math.random()*(1.2-.2)+.2));
+		var rolled = doRangeLuck(1,getRandomRange((playerStats.Dex+playerStats.level),1.25),true);
+		target = doRangeLuck(2,target,false);
 		switch(Math.floor(Math.random()*4)){
 			case(0): ss = "OH GOD A KNIFE IS FLYING RIGHT AT YOU! DODGE!!!!"; break;
 			case(1): ss = "You enter the room and earned your Medical Degree! Now it's time to perform open heart surgery, better keep a steady hand.";break;
 			case(2): ss = "This room contains a game where you have to catch "+formatNumber(target)+" falling objects within "+(Math.floor((1000/target)*10000)/10000)+" seconds. I think you can do it!";break;
-			case(3): ss = "It's time for the Rock Paper Scissor championship. Your in the final round against Ninjy McNinja!";break;
+			case(3): ss = "It's time for the Rock Paper Scissor championship. You're in the final round against Ninjy McNinja!";break;
 		}
 		var tcol = "red";
-		if(playerStats.Dex >= target)
+		if(rolled >= target)
 			tcol = "green";
-		tt += "<br><br>Dexterity required to pass: <span style='color:red'>"+target+"</span><br>Your Dexterity: <span style='color:"+tcol+"'>"+playerStats.Dex+"</span><br>";
-		if(playerStats.Dex >= target){
+		tt += "<br><br>Dexterity required to pass: <span style='color:red'>"+target+"</span><br>Your Dexterity roll: <span style='color:"+tcol+"'>"+rolled+"</span><br>";
+		if(rolled >= target){
 			var re = getRandomReward().split(";");
 			var tVal = Number(re[0]);
 			var tType = re[1];
@@ -173,11 +194,12 @@ var roomEvents = {
 				case("Gold"): questRGold(tVal); color = "gold";break;
 				case("Cats"): questRCat(tVal); color = "sandybrown"; break;
 				case("Gems"): questRGem(tVal); color = "cyan"; break;
+				case("Jewel Fragments"): questRFrag(tVal); color = "#DC7AA3"; break;
 			}
-			tt += "<br>SUCCESS! You displayed exemplary dexterity and have been rewarded. You earned <span style='color:"+color+"'>"+formatNumber(tVal)+" "+tType+"!</span>";
+			tt += "<br><span style='color:green'>SUCCESS!</span> You displayed exemplary dexterity and have been rewarded. You earned <span style='color:"+color+"'>"+formatNumber(tVal)+" "+tType+"!</span>";
 		}
 		else
-			tt += "<br>Whoopse, looks like someone wasn't dexterous enough. Let's leave and pretend this never happened.";
+			tt += "<br><span style='color:red'>Whoopse, looks like someone wasn't dexterous enough. Let's leave and pretend this never happened.</span>";
 		
 		quest2Text(tt);
 		return ss;
@@ -185,7 +207,9 @@ var roomEvents = {
 	endcheck:function(){
 		var ss = "";
 		var tt = "";
-		var target = Math.floor(2 + playerStats.qlevel* Math.pow(playerStats.qlevel, .1) * (Math.random()*(1.5-.5)+.5));
+		var target = Math.floor(2 + playerStats.qlevel* Math.pow(playerStats.qlevel, .1) * (Math.random()*(1.2-.2)+.2));
+		var rolled = doRangeLuck(1,getRandomRange((playerStats.End+playerStats.level),1.25),true);
+		target = doRangeLuck(2,target,false);
 		switch(Math.floor(Math.random()*4)){
 			case(0): ss = "This room is a long hallway filled with microwaves. You'll have to pass through it to get the treasure"; break;
 			case(1): ss = "A creepy guy is awaiting you in the room. He whispers \"Let me stab you with these "+target+" needles and I'll give you something good.\" It'd be a bad idea NOT to.";break;
@@ -193,10 +217,10 @@ var roomEvents = {
 			case(3): ss = "You enter the room and see a bowl of nails. You decide to eat them before you realize there isn't any milk.";break;
 		}
 		var tcol = "red";
-		if(playerStats.End >= target)
+		if(rolled >= target)
 			tcol = "green";
-		tt += "<br><br>Endurance required to pass: <span style='color:red'>"+target+"</span><br>Your Endurance: <span style='color:"+tcol+"'>"+playerStats.End+"</span><br>";
-		if(playerStats.End >= target){
+		tt += "<br><br>Endurance required to pass: <span style='color:red'>"+target+"</span><br>Your Endurance roll: <span style='color:"+tcol+"'>"+rolled+"</span><br>";
+		if(rolled >= target){
 			var re = getRandomReward().split(";");
 			var tVal = Number(re[0]);
 			var tType = re[1];
@@ -206,11 +230,12 @@ var roomEvents = {
 				case("Gold"): questRGold(tVal); color = "gold";break;
 				case("Cats"): questRCat(tVal); color = "sandybrown"; break;
 				case("Gems"): questRGem(tVal); color = "cyan"; break;
+				case("Jewel Fragments"): questRFrag(tVal); color = "#DC7AA3"; break;
 			}
-			tt += "<br>SUCCESS! Your resilience is unheard of and for that you will get the reward you deserve. You earned <span style='color:"+color+"'>"+formatNumber(tVal)+" "+tType+"!</span";
+			tt += "<br><span style='color:green'>SUCCESS!</span> Your resilience is unheard of and for that you will get the reward you deserve. You earned <span style='color:"+color+"'>"+formatNumber(tVal)+" "+tType+"!</span";
 		}
 		else
-			tt += "<br>Struggling to keep it together, you leave the room. It looks like you aren't able to endure as much as you thought.";
+			tt += "<br><span style='color:red'>Struggling to keep it together, you leave the room. It looks like you aren't able to endure as much as you thought.</span>";
 		
 		quest2Text(tt);
 		return ss;
@@ -218,7 +243,9 @@ var roomEvents = {
 	luckcheck:function(){
 		var ss = "";
 		var tt = "";
-		var target = Math.floor(2 + playerStats.qlevel* Math.pow(playerStats.qlevel, .1) * (Math.random()*(1.5-.5)+.5));
+		var target = Math.floor(2 + playerStats.qlevel* Math.pow(playerStats.qlevel, .1) * (Math.random()*(1.2-.2)+.2));
+		var rolled = doRangeLuck(1,getRandomRange((playerStats.luck+playerStats.level),1.25),true);
+		target = doRangeLuck(2,target,false);
 		switch(Math.floor(Math.random()*4)){
 			case(0): ss = "You enter the room and...."; break;
 			case(1): ss = "As you enter a man yells at you \"HEY PICK A NUMBER BETWEEN 0 AND "+target+"\". So you do.";break;
@@ -226,10 +253,10 @@ var roomEvents = {
 			case(3): ss = "You peek into the room and see a man standing there. He tells you that luck isn't as good as you might think it is and then disappears.";break;
 		}
 		var tcol = "red";
-		if(playerStats.luck >= target)
+		if(rolled >= target)
 			tcol = "green";
-		tt += "<br><br>Luck required to pass: <span style='color:red'>"+target+"</span><br>Your Luck: <span style='color:"+tcol+"'>"+playerStats.luck+"</span><br>";
-		if(playerStats.luck >= target){
+		tt += "<br><br>Luck required to pass: <span style='color:red'>"+target+"</span><br>Your Luck roll: <span style='color:"+tcol+"'>"+rolled+"</span><br>";
+		if(rolled >= target){
 			var re = getRandomReward().split(";");
 			var tVal = Number(re[0]);
 			var tType = re[1];
@@ -239,11 +266,12 @@ var roomEvents = {
 				case("Gold"): questRGold(tVal); color = "gold";break;
 				case("Cats"): questRCat(tVal); color = "sandybrown"; break;
 				case("Gems"): questRGem(tVal); color = "cyan"; break;
+				case("Jewel Fragments"): questRFrag(tVal); color = "#DC7AA3"; break;
 			}
-			tt += "<br>SUCCESS! Don't celebrate too much, you just got lucky. You earned <span style='color:"+color+"'>"+formatNumber(tVal)+" "+tType+"!<span>";
+			tt += "<br><span style='color:green'>SUCCESS!</span> Don't celebrate too much, you just got lucky. You earned <span style='color:"+color+"'>"+formatNumber(tVal)+" "+tType+"!<span>";
 		}
 		else
-			tt += "<br>Someone isn't very lucky today. Maybe next time.";
+			tt += "<br><span style='color:red'>Someone isn't very lucky today. Maybe next time.</span>";
 		
 		quest2Text(tt);
 		return ss;
@@ -258,8 +286,8 @@ var roomEvents = {
 		}
 		var tt = "<br><span style='color:green'>The number of rooms you need to complete the quest has been lowered!</span>"; 
 		
-		var reduce = doRangeLuck(0,100,false);
-		var nroom = Math.floor(playerStats.qroomMax * (reduce/100));
+		var reduce = doRangeLuck(10,100,false);
+		var nroom = 1+Math.floor(playerStats.qroomMax * (reduce/100));
 		quest2Text(tt);
 		questRRoom(nroom);
 		return ss;
@@ -273,7 +301,7 @@ var roomEvents = {
 			case(3):ss = "The room has multiple exits. Feeling lucky you close your eyes and pick one randomly!";break;
 		}
 		if(playerStats.maps > 0){
-			playerStats.maps --;
+			questLoseMap();
 			tt = "<br><span style='color:green'>Luckily you had a map. You are able to find your way back to where you were without any trouble! The map was destroyed, however.</span>";
 		}
 		else{
@@ -304,7 +332,9 @@ var roomEvents = {
 			case(2):ss = "Upon searching the room you find a Hyperbolic Time Chamber. You enter it and 1 second later come out much stronger!";break;
 			case(3):ss = "There is a TV in this room playing an exercise routine on it. You decide to follow along for as long as you can.";break;
 		}
-		var xp = Math.floor(playerStats.qlevel * 25 * playerStats.level);
+		var con = Math.floor(Math.random()*(30-10)+10);
+		var xp = Math.floor(Math.pow(playerStats.qlevel,.45) * con * Math.pow(playerStats.qlevel,.45));
+		xp = (getRandomRange(xp,.2));
 		questRXP(xp);
 
 		return ss;
@@ -314,7 +344,7 @@ var roomEvents = {
 		var tt = "";
 		var treward = Math.floor(Math.random()*(9-5)+5);
 		if(playerStats.bigKey > 0){
-			playerStats.bigKey --;
+			questLoseBKey();
 			tt += "<br><span style='color:green'>The Big Key you were dragging around started to vibrate and disappeared! But it looks like the treasure chest has better rewards now!</span>";
 			treward += (Math.floor(Math.random()*(4-1)+1));
 		}
@@ -329,7 +359,10 @@ var roomEvents = {
 			break;
 			case(2): var tVal = gemReward(treward);
 			tt += "<br>Cool...<span style='color:cyan'>"+formatNumber(tVal)+" Gems.</span> That's really nice, isn't it?";
-			questRGem(tVal);
+			questRGem(tVal);break;
+			case(3): var tVal = fragReward(treward);
+			tt += "<br>JACKPOT BABY! You just earned yourself like <span style='color:#DC7AA3'>"+formatNumber(tVal)+" Jewel Fragments.</span> What ever will you do with them all?";
+			questRFrag(tVal); break;
 		}
 		quest2Text(tt);
 		return ss;
@@ -339,7 +372,7 @@ var roomEvents = {
 		var tt = "";
 		var treward = Math.floor(Math.random()*4);
 		if(playerStats.bigKey > 0){
-			playerStats.bigKey --;
+			questLoseBKey();
 			tt += "<br><span style='color:green'>The Big Key you were dragging around started to vibrate and disappeared! But it looks like the treasure chest has better rewards now!</span>";
 			treward += (Math.floor(Math.random()*(4-1)+1));
 		}
@@ -355,12 +388,28 @@ var roomEvents = {
 			case(2): var tVal = gemReward(treward);
 			tt += "<br>AWWWWW YES! You just scored <span style='color:cyan'>"+formatNumber(tVal)+" Gems.</span>";
 			questRGem(tVal);
+			break;
+			case(3): var tVal = fragReward(treward);
+			tt += "<br>Ah it appears this chest had some sweet treasure inside. <span style='color:#DC7AA3'>"+formatNumber(tVal)+" Jewel Fragments to be exact!</span>";
+			questRFrag(tVal);
+			break;0
 		}
 		quest2Text(tt);
 		return ss;
 	},
 	hardcombat:function(){
-		return "no combat yet";
+		var lvlRng =  Math.random()*.1+.1;
+		var ss = "";
+		ss = enterCombat(lvlRng);
+		var tt = "";
+		if(playerStats.bombs > 0){
+			tt+= "<br><br>You pull the bomb out of your bag. \"Ha ha! Not today!\" you shout and throw the bomb at the <span style='color:#C18AB5'>"+playerStats.monName+"</span>. KABOOM!";
+			questLoseBomb();
+			quest2Text(tt);
+			questRXP(getXp());
+			hideState();
+		}
+		return ss
 	},
 	levelup:function(){
 		var ss = ""
@@ -371,7 +420,7 @@ var roomEvents = {
 			case(3):ss = "What's this? You enter the room and a mist of magic appears around you and clouds your vision. When it dissipates you find yourself in a new dungeon.";break;
 		}
 		var tt ="<br> <span style='color:green'>Your quest level has increased.</span>";
-		var reduce = doRangeLuck(1,50,true);
+		var reduce = doRangeLuck(10,20,true);
 		var nlvl = Math.floor(1+(playerStats.qlevel * (1+(reduce/100))));
 		questRLvl(nlvl);
 		quest2Text(tt);
@@ -387,7 +436,8 @@ var roomEvents = {
 		}
 		var tt ="<br> <span style='color:red'>Your quest level has decreased.</span>";
 		var reduce = doRangeLuck(50,99,true);
-		var nlvl = Math.floor(1+(playerStats.qlevel * (reduce/100)));
+		var nlvl = Math.floor((playerStats.qlevel * (reduce/100)));
+		nlvl = nlvl>1?nlvl:1;
 		questRLvl(nlvl);
 		quest2Text(tt);
 		return ss;
@@ -402,9 +452,19 @@ var roomEvents = {
 			case(3):ss = "After a few hours of trying to create a new sword you accidentally created a bomb!";break;
 			case(4):ss = "You enter the room and find a bomb! But you don't have a bomb bag. Let's put it back.....just kidding!";break;
 		}
-		tt = "<br><span style='color:green;>You got a bomb!</span>";
+		
+		var amt = 1;
+		if(playerStats.catUpgrades[18] == 1){
+			if(doLuck(10))
+				amt = 2;
+		}
+		if(amt == 1)
+			tt = "<br><span style='color:green'>You got a bomb!</span>";
+		else
+			tt = "<br><span style='color:green'>You got <span class=\"rainbow-text\">two</span> bombs! Get to Bombing!</span>";
+
 		quest2Text(tt);
-		playerStats.bombs ++;
+		questGetBomb(amt);
 		return ss;
 	},
 	map:function(){
@@ -417,9 +477,17 @@ var roomEvents = {
 			case(3):ss = "At the end of this room you see some parchment hung up on the wall. You take it to wipe the sweat off of your head.";break;
 			case(4):ss = "You enter the room and a lad throws something at you. \"Who needs a map?\" he says and then teleports away.";break;
 		}
-		tt = "<br><span style='color:green;>You got a map!</span>";
+		var amt = 1;
+		if(playerStats.catUpgrades[18] == 1){
+			if(doLuck(10))
+				amt = 2;
+		}
+		if(amt == 1)
+			tt = "<br><span style='color:green'>You got a map!</span>";
+		else
+			tt = "<br><span style='color:green'>You got <span class=\"rainbow-text\">two</span> maps! Now you never have an excuse to be late</span>";
 		quest2Text(tt);
-		playerStats.maps ++;
+		questGetMap(amt);
 		return ss;
 	},
 	bigkey:function(){
@@ -432,20 +500,123 @@ var roomEvents = {
 			case(3):ss = "Entering the room you see a giant key laying on the floor. You drag it along with you.";break;
 			case(4):ss = "You walk into the magical room and magically a big key appears inside your bags. You fall to the floor!";break;
 		}
-		tt = "<br><span style='color:green;>You got a big key! I wonder what it does.</span>";
+		var amt = 1;
+		if(playerStats.catUpgrades[18] == 1){
+			if(doLuck(10))
+				amt = 2;
+		}
+		if(amt == 1)
+			tt = "<br><span style='color:green'>You got a Big Key!</span>";
+		else
+			tt = "<br><span style='color:green'>You got <span class=\"rainbow-text\">two</span> Big Keys! How are you going to carry all these keys?!?</span>";
 		quest2Text(tt);
-		playerStats.bigkey ++;
+		questGetBKey(amt);
 		return ss;
 	},
+	potion:function(){
+		var ss = "";
+		var tt = "";
+		switch(Math.floor(Math.random()*5)){
+			case(0):ss = "You enter the room and potion on the ground. It has a Skull on the label. You take it."; break;
+			case(1):ss = "You walk into the room and see a wizard selling potions. He asks if you'd like a free one and you say \"of course!\"";break;
+			case(2):ss = "After a few hours of trying to create a bomb you accidentally created a potion!";break;
+			case(3):ss = "You joined the Dungeon fraternity, as part of the initiation they make you chug potions. You secretly keep one. SIGMA ALPHA!";break;
+			case(4):ss = "As you enter the room you see a corpse! This looks dangerous, however, you loot the body and find some cool stuff!";break;
+		}
+		var amt = 1;
+		if(playerStats.catUpgrades[18] == 1){
+			if(doLuck(10))
+				amt = 2;
+		}
+		if(amt == 1)
+			tt = "<br><span style='color:green'>You got a potion!</span>";
+		else
+			tt = "<br><span style='color:green'>You got <span class=\"rainbow-text\">two</span> potions! CHUG! CHUG! CHUG!</span>";
+		quest2Text(tt);
+		questGetPotion(amt);
+		return ss;
+	},
+	bossRoom: function(){
+		playerStats.isBoss = true;
+		bossFlag = 0;
+		return enterCombat(0);
+	}
+}
+function questGetBomb(x){
+	setTimeout(function(){playerStats.bombs+=x;},(playerStats.questTimer*1000/2));
+}
+function questLoseBomb(){
+	setTimeout(function(){playerStats.bombs--;},(playerStats.questTimer*1000/2));
+}
+function questGetKey(x){
+	setTimeout(function(){playerStats.keys+=x;},(playerStats.questTimer*1000/2));
+}
+function questLoseKey(){
+	setTimeout(function(){playerStats.keys--;},(playerStats.questTimer*1000/2));
+	}
+function questGetMap(x){
+	setTimeout(function(){playerStats.maps+=x;},(playerStats.questTimer*1000/2));
+}
+function questLoseMap(){
+	setTimeout(function(){playerStats.maps--;},(playerStats.questTimer*1000/2));
+}
+function questGetBKey(x){
+	setTimeout(function(){playerStats.bigKey+=x;},(playerStats.questTimer*1000/2));
+}
+function questLoseBKey(){
+	setTimeout(function(){playerStats.bigKey--;},(playerStats.questTimer*1000/2));
+}
+function questGetPotion(x){
+	setTimeout(function(){playerStats.potions+=x;},(playerStats.questTimer*1000/2));
+}
+function questDoWin(){
+	setTimeout(function(){
+		playerStats.Hp += Math.round(playerStats.HpMax*(Math.random()));
+		if(playerStats.Hp > playerStats.HpMax)
+			playerStats.Hp = playerStats.HpMax;
+		},(playerStats.questTimer*1000/2));
+}
+function questDoWinFull(){
+	setTimeout(function(){
+		playerStats.Hp = playerStats.HpMax;
+		},(playerStats.questTimer*1000/2));
 }
 function questRGold(t){
+	ggoldg+= t;
 	setTimeout(function(){addGold(t, 1);},(playerStats.questTimer*1000/2));
 }
 function questRCat(t){
+	gcatg+= t;
 	setTimeout(function(){addCat(t, 1);},(playerStats.questTimer*1000/2));
 }
 function questRGem(t){
+	ggemg+= t;
 	setTimeout(function(){addGem(t,1)},(playerStats.questTimer*1000/2));
+}
+var ggoldg = 0;
+var gcatg = 0;
+var ggemg = 0;
+var gfragg = 0;
+function questRFrag(v){
+	gfragg += v;
+	var r = Math.random();
+	var t = Math.random();
+	var e = Math.random();
+	var a = Math.random();
+	var o = Math.random()*.25;
+	var z = r+t+e+a+o;
+	r = r/z;
+	t = t/z;
+	e = e/z;
+	a = a/z;
+	o = o/z;
+	setTimeout(function(){
+		playerStats.rubyFragment += Math.floor(r*v);
+		playerStats.topazFragment += Math.floor(t*v);
+		playerStats.amethystFragment += Math.floor(a*v);
+		playerStats.emeraldFragment += Math.floor(e*v);
+		playerStats.onyxFragment += Math.floor(o*v);
+	},(playerStats.questTimer*1000/2));
 }
 function questRXP(t){
 	setTimeout(function(){

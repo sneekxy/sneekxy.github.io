@@ -1,4 +1,4 @@
-<HTML>
+<!DOCTYPE HTML>
 	<TITLE>Lucky Deck</TITLE>
 	<HEAD>
 	<meta http-equiv='cache-control' content='no-cache'>
@@ -27,7 +27,7 @@
 		Eagles: <span id="eagle"></span>
 		<span id="eagleTT" class="tooltip" style="z-index:3">Eagles are attracted to gold and will steal a % of your gold earned each turn. The more gold you earn the more they will steal</span>
 		</span>
-		<span id="mainMenu" class="mainMenu">
+		<div id="mainMenu" class="mainMenu">
 			<div id="buyPackHolder" class="buyPackHolder">
 				<div id="buyPack" class="buyPack">
 					<span id="buyPackButton" class="buyPackButton" onClick="buyPacks()">Buy More Cards</span>
@@ -232,25 +232,30 @@
 				<div id="buyGemHolder" class="gemBuyHolder" style="cursor:pointer" onclick="buyGemCard(0)">
 					Buy a gem card for <span id="gemCost"></span> Gems.
 				</div>
-				<div id="buyGemHolder" class="gemBuyHolder" style="cursor:pointer;bottom:50px;" onclick="buyGemCard(1)">
+				<div id="buyGemHolder2" class="gemBuyHolder" style="cursor:pointer;bottom:50px;" onclick="buyGemCard(1)">
 					Buy <span id="gemCost3"></span> gem cards for <span id="gemCost2"></span> Gems.
 				</div>
+				<span id="gemUpgrade" class="upgradeHolder">
+				</span>
+				<span id="gemUpgradeBought" class="upgradeHolderBought">
+				</span>
 				
 			</div>
 			
 			<div id="playerProducers" class="tabMenu" style="display:none">
 				<span id="playerEQBackground" class="playerEQBackground">
-				<div id="playerEQHolder" class="playerEQHolder">
-					<span id="playerHelmet" class="playerEQSlot" style="left:60;top:60; background-image:url('art/eq/helmet0.png');"></span>
-					<span id="playerSword" class="playerEQSlot" style="left:10;top:170;background-image:url('art/eq/sword0.png');"></span>
-					<span id="playerChest" class="playerEQSlot" style="left:200;top:210;background-image:url('art/eq/chest0.png');"></span>
-					<span id="playerShoulder" class="playerEQSlot" style="left:240;top:100;background-image:url('art/eq/shoulder0.png');"></span>
-					<span id="playerGlove" class="playerEQSlot" style="left:300;top:190;background-image:url('art/eq/glove0.png');"></span>
-					<span id="playerPants" class="playerEQSlot" style="left:90;top:240;background-image:url('art/eq/pants0.png');"></span>
-					<span id="playerBelt" class="playerEQSlot" style="left:240;top:280;background-image:url('art/eq/belt0.png');"></span>
-					<span id="playerBoot" class="playerEQSlot" style="left:50;top:350;background-image:url('art/eq/boot0.png');"></span>
-					<span id="playerTrinket" class="playerEQSlot" style="left:310;top:340;background-image:url('art/eq/trinket0.png');"></span>
-				</div>
+					<div id="playerEQHolder" class="playerEQHolder">
+						<span id="playerHelmet" class="playerEQSlot" style="left:60px;top:60px; background-image:url('art/eq/helmet0.png');"></span>
+						<span id="playerSword" class="playerEQSlot" style="left:10px;top:170px;background-image:url('art/eq/sword0.png');"></span>
+						<span id="playerChest" class="playerEQSlot" style="left:200px;top:210px;background-image:url('art/eq/chest0.png');"></span>
+						<span id="playerShoulder" class="playerEQSlot" style="left:240px;top:100px;background-image:url('art/eq/shoulder0.png');"></span>
+						<span id="playerGlove" class="playerEQSlot" style="left:300px;top:190px;background-image:url('art/eq/glove0.png');"></span>
+						<span id="playerPants" class="playerEQSlot" style="left:90px;top:240px;background-image:url('art/eq/pants0.png');"></span>
+						<span id="playerBelt" class="playerEQSlot" style="left:240px;top:280px;background-image:url('art/eq/belt0.png');"></span>
+						<span id="playerBoot" class="playerEQSlot" style="left:50px;top:350px;background-image:url('art/eq/boot0.png');"></span>
+						<span id="playerTrinket" class="playerEQSlot" style="left:310px;top:340px;background-image:url('art/eq/trinket0.png');"></span>
+					</div>
+				</span>
 				<div id="playerEQList" class="playerEQList">
 					<div id="player0" class="buildingLineEQ">
 						<span class="tooltipHolder"><span id="player0BuildingName" class="buildingLineName"></span><span id="player0TT" class="tooltip"></span></span>
@@ -348,43 +353,43 @@
 						<div class="jewelColumnHeader"style="color:red">Ruby</div>
 						<div class="jewelSlotBuy" onclick="buyJewel('0;0')" onmouseover="buildJewelTT('0;0')">10% of Fragments<div id="jewel0TT0" class="tooltip">test</div>
 						</div>
-						<div class="jewelSlotBuy" onclick="buyJewel('0;1')"onmouseover="buildJewelTT('0;1')">50% of Fragments<div id="jewel0TT1" class="tooltip"></div>
+						<div class="jewelSlotBuy" onclick="buyJewel('0;1')" onmouseover="buildJewelTT('0;1')">50% of Fragments<div id="jewel0TT1" class="tooltip"></div>
 						</div>
-						<div class="jewelSlotBuy" onclick="buyJewel('0;2')"onmouseover="buildJewelTT('0;2')">100% of Fragments<div id="jewel0TT2" class="tooltip"></div>
+						<div class="jewelSlotBuy" onclick="buyJewel('0;2')" onmouseover="buildJewelTT('0;2')">100% of Fragments<div id="jewel0TT2" class="tooltip"></div>
 						</div>
 					</div>
 					<div class="jewelSlotColumn">
 						<div class="jewelColumnHeader"style="color:green">Emerald</div>
-						<div class="jewelSlotBuy" onclick="buyJewel('1;0')"onmouseover="buildJewelTT('1;0')">10% of Fragments<div id="jewel1TT0" class="tooltip"></div>
+						<div class="jewelSlotBuy" onclick="buyJewel('1;0')" onmouseover="buildJewelTT('1;0')">10% of Fragments<div id="jewel1TT0" class="tooltip"></div>
 						</div>
-						<div class="jewelSlotBuy" onclick="buyJewel('1;1')"onmouseover="buildJewelTT('1;1')">50% of Fragments<div id="jewel1TT1" class="tooltip"></div>
+						<div class="jewelSlotBuy" onclick="buyJewel('1;1')" onmouseover="buildJewelTT('1;1')">50% of Fragments<div id="jewel1TT1" class="tooltip"></div>
 						</div>
-						<div class="jewelSlotBuy" onclick="buyJewel('1;2')"onmouseover="buildJewelTT('1;2')">100% of Fragments<div id="jewel1TT2" class="tooltip"></div>
+						<div class="jewelSlotBuy" onclick="buyJewel('1;2')" onmouseover="buildJewelTT('1;2')">100% of Fragments<div id="jewel1TT2" class="tooltip"></div>
 						</div> 
 					</div>
 					<div class="jewelSlotColumn">
 						<div class="jewelColumnHeader"style="color:yellow">Topaz</div>
-						<div class="jewelSlotBuy" onclick="buyJewel('2;0')"onmouseover="buildJewelTT('2;0')">10% of Fragments<div id="jewel2TT0" class="tooltip"></div>
+						<div class="jewelSlotBuy" onclick="buyJewel('2;0')" onmouseover="buildJewelTT('2;0')">10% of Fragments<div id="jewel2TT0" class="tooltip"></div>
 						</div>
-						<div class="jewelSlotBuy" onclick="buyJewel('2;1')"onmouseover="buildJewelTT('2;1')">50% of Fragments<div id="jewel2TT1" class="tooltip"></div>
+						<div class="jewelSlotBuy" onclick="buyJewel('2;1')" onmouseover="buildJewelTT('2;1')">50% of Fragments<div id="jewel2TT1" class="tooltip"></div>
 						</div>
-						<div class="jewelSlotBuy" onclick="buyJewel('2;2')"onmouseover="buildJewelTT('2;2')">100% of Fragments<div id="jewel2TT2" class="tooltip"></div>
+						<div class="jewelSlotBuy" onclick="buyJewel('2;2')" onmouseover="buildJewelTT('2;2')">100% of Fragments<div id="jewel2TT2" class="tooltip"></div>
 						</div>
 					</div>
 					<div class="jewelSlotColumn">
 						<div class="jewelColumnHeader"style="color:purple">Amethyst</div>
-						<div class="jewelSlotBuy" onclick="buyJewel('3;0')"onmouseover="buildJewelTT('3;0')">10% of Fragments<div id="jewel3TT0" class="tooltip"></div>
+						<div class="jewelSlotBuy" onclick="buyJewel('3;0')" onmouseover="buildJewelTT('3;0')">10% of Fragments<div id="jewel3TT0" class="tooltip"></div>
 						</div>
-						<div class="jewelSlotBuy" onclick="buyJewel('3;1')"onmouseover="buildJewelTT('3;1')">50% of Fragments<div id="jewel3TT1" class="tooltip"></div>
+						<div class="jewelSlotBuy" onclick="buyJewel('3;1')" onmouseover="buildJewelTT('3;1')">50% of Fragments<div id="jewel3TT1" class="tooltip"></div>
 						</div>
-						<div class="jewelSlotBuy" onclick="buyJewel('3;2')"onmouseover="buildJewelTT('3;2')">100% of Fragments<div id="jewel3TT2" class="tooltip"></div>
+						<div class="jewelSlotBuy" onclick="buyJewel('3;2')" onmouseover="buildJewelTT('3;2')">100% of Fragments<div id="jewel3TT2" class="tooltip"></div>
 						</div>
 					</div>
 					<div class="jewelSlotColumn" style="margin-right:0px">
 						<div class="jewelColumnHeaderOnyx">Onyx</div>
-						<div class="jewelSlotBuy" onclick="buyJewel('4;0')"onmouseover="buildJewelTT('4;0')">10% of Fragments<div id="jewel4TT0" class="tooltip"></div>
+						<div class="jewelSlotBuy" onclick="buyJewel('4;0')" onmouseover="buildJewelTT('4;0')">10% of Fragments<div id="jewel4TT0" class="tooltip"></div>
 						</div>
-						<div class="jewelSlotBuy" onclick="buyJewel('4;1')"onmouseover="buildJewelTT('4;1')">50% of Fragments<div id="jewel4TT1" class="tooltip"></div>
+						<div class="jewelSlotBuy" onclick="buyJewel('4;1')" onmouseover="buildJewelTT('4;1')">50% of Fragments<div id="jewel4TT1" class="tooltip"></div>
 						</div>
 						<div class="jewelSlotBuy" onclick="buyJewel('4;2')" onmouseover="buildJewelTT('4;2')">100% of Fragments<div id="jewel4TT2" class="tooltip"></div>
 						</div>
@@ -439,20 +444,26 @@
 					</div>
 				</div>
 				
-				<div id="breakGearHolder" class="breakGearHolder" style="cursor:pointer" onclick="breakGearDown()">
+				<div id="breakGearHolder" class="breakGearHolder" onclick="breakGearDown()">
 					Break down duplicate gear for jewel fragments.<br>Cost: <span id="breakCost"></span> Gems.
+				</div>
+				<div id="buyJewelSlot" class="jewelSlotBuyBtn" onclick="buyJewelSlot()">
+					Buy an extra jewel slot for <span id="newSlotCost"></span> Gems!
 				</div>
 			</div>		
 			<div id="questProducers" class="tabMenu" style="display:none;">
+				<div id="firstQuestMessage" class="firstQuest">
+				With the power of the Equipment Cards you are now able to start questing! Questing will happen automatically once you start a quest and will reward you as you go.<br>
+				Your first quest will begin when you <br><br><span style="font-weight:bold;cursor:pointer"onClick="newQuest(1)">Click Here!</span>
+				</div>
 				<div id="questHolder" class="questHolder">
 					<div id="questText" class="questText">
 					</div>
 				</div>
 				<div id="questInfo" class="questInfoHolder">
-					<div class="questInfoLine"style="text-align:center;border-top: 0px;">Quest: <span id="questName"></span></div>
+					<div class="questInfoLine" style="text-align:center;border-top: 0px;">Quest: <span id="questName"></span></div>
 					<hr>
-					<div class="questInfoLine" style="border-top: 0px;">Quest Level: <span class="questInfoValue" id="questLevel"></span></div>
-					<div class="questInfoLine">Quest Power Level: <span class="questInfoValue" id="questPLevel"></span></div>
+					<div class="questInfoLine" style="border-top: 0px;">Quest Power Level: <span class="questInfoValue" id="questPLevel"></span></div>
 					<div class="questInfoLine">Your Power Level: <span class="questInfoValue" id="questPLevel2"></span></div>
 					<div class="questInfoLine">Rooms Remaining: <span class="questInfoValue" id="questRoomsLeft"></span></div>
 					<div class="questInfoLine">Rooms Completed: <span class="questInfoValue" id="questRooms"></span></div>
@@ -460,21 +471,24 @@
 					<div class="questInfoLine">Big Keys: <span class="questInfoValue" id="questKeysBig"></span></div>
 					<div class="questInfoLine">Maps: <span class="questInfoValue" id="questMaps"></span></div>
 					<div class="questInfoLine">Bombs: <span class="questInfoValue" id="questBombs"></span></div>
+					<div class="questInfoLine">Potions: <span class="questInfoValue" id="questPotions"></span></div>
+					<br><br>
+					<div class="autoPotion" onclick="autoPotion()">Auto-Potion: <span class="autoPotionVal" id="autoPotion">Off</span></div>
 				</div>
 				<div id="questStats" class="questStatLine">
 					<span style="color:#079A12">Level: </span><span id="questPlayerLevel"></span>
-					<br><span id="questPlayerHpColor" style="color:#30E0DD">HP:<span id="questPlayerCurrHp"></span>/<span id="questPlayerHp"></span></span> <span style="color:red">|</span><span style="color:#D54ED9"> Experience to Level:</span> <span id="questPlayerTNL"></span>
-					</div>
+					<br><span id="questPlayerHpColor" style="color:#30E0DD">HP: <span id="questPlayerCurrHp"></span>/<span id="questPlayerHp"></span></span> <span style="color:red">|</span><span style="color:#D54ED9"> Experience to Level:</span> <span id="questPlayerTNL"></span>
+				</div>
 				<div id="enemyStats" class="questStatLine2">
+					<span style="color:#9500FF"><span id="questEnemyName"></span><br>
 					<span style="color:#079A12"><span id="questEnemyLevel">10</span> :Enemy Level</span>
 					<br><span style="color:#30E0DD"><span id="questEnemyCurrHp">1</span>/<span id="questEnemyHp">1</span> :HP</span>
-					</div>
 				</div>
 			</div>
-		</span>
+		</div>
 		
 		<div id="menuSelector" class="menuSelectorHolder">
-			<div id="goldMenuSelector" class="menuSelector" style="left:0px;" onclick="changeMenu('gold')";>Gold</div>
+			<div id="goldMenuSelector" class="menuSelector" style="left:0px;" onclick="changeMenu('gold')">Gold</div>
 			
 			<div id="catMenuSelector" class="menuSelector" style="left:65px;" onclick="changeMenu('cat')">Cat</div>
 			
@@ -488,10 +502,12 @@
 			
 		</div>
 		<div id="menuSelectorGlow" class="menuSelectorHolder">
-		<div id="goldMenuGlow" style="left:0px;" class="menuGlow"></div>
-		<div id="catMenuGlow" style="left:65px;" class="menuGlow"></div>
-		<div id="gemMenuGlow" style="left:130px;" class="menuGlow"></div>
-		<div id="playerMenuGlow" style="left:195px;" class="menuGlow"></div>
+		<div id="goldMenuGlow" style="left:0px" class="menuGlow"></div>
+		<div id="catMenuGlow" style="left:65px" class="menuGlow"></div>
+		<div id="gemMenuGlow" style="left:130px" class="menuGlow"></div>
+		<div id="playerMenuGlow" style="left:195px" class="menuGlow"></div>
+		<div id="jewelMenuGlow" style="left:260px" class="menuGlow"></div>
+		<div id="questMenuGlow" style="left:325px" class="menuGlow"></div>
 		</div>
 		<div id="reset" style="right:0;top:0;position:absolute;cursor:pointer"onclick="resetGame()">RESET GAME</div>
 	</div>
@@ -510,5 +526,7 @@
 <script src="quest.js"></script>
 <script src="roomEvents.js"></script>
 <script src="monster.js"></script>
+<script src="combat.js"></script> 
+<script src="boss.js"></script>
 
 </HTML>

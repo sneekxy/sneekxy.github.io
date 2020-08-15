@@ -131,6 +131,8 @@ function applyEffect(effect, amt, ugl, eid){
 							if(doLuck(perc)){
 								procs++;
 								perc = perc * (1-reduc);
+								if(procs >= (1+(getHighestRarityValOfLine(ugl)*2)))
+									keepGoing = false;
 							}
 							else{
 								keepGoing = false;
@@ -152,6 +154,8 @@ function applyEffect(effect, amt, ugl, eid){
 							if(doLuck(perc)){
 								procs++;
 								perc = perc * (1-reduc);
+								if(procs >= (1+(getHighestRarityValOfLine(ugl)*2)))
+									keepGoing = false;
 							}
 							else{
 								keepGoing = false;
@@ -226,11 +230,11 @@ function applyEffect(effect, amt, ugl, eid){
 						var totGold = 0;
 						var times = Math.round(getLuckReroll()/2);
 						var upper = effList2[1];
-						var pluck = scaledLuck(playerStats.luck) + playerStats.goldUpgrades[6];
+						var pluck = genericScale(scaledLuck(playerStats.luck + playerStats.goldUpgrades[6]),3);
 
 						for(var x = 0; x < times; x++){
-							totGold += doRangeLuck(0, upper, true);
-							totGold *= 1+((pluck-x)/10);
+							totGold += (doRangeLuck(0, upper, true)/(x+1));
+							totGold *= (1+((pluck-x)/10)/(x+1));
 						}
 						goldVal += totGold;
 					}
@@ -240,10 +244,10 @@ function applyEffect(effect, amt, ugl, eid){
 						var totGold = 0;
 						var times = Math.round(getLuckReroll()/2);
 						var upper = effList2[1];
-						var pluck = playerStats.luck + playerStats.goldUpgrades[6];
+						var pluck = genericScale(scaledLuck(playerStats.luck + playerStats.goldUpgrades[6]),3);
 						for(var x = 0; x < times; x++){
-							totGold += doRangeLuck(0, upper, true);
-							totGold *= 1+((pluck-x)/10);
+							totGold += (doRangeLuck(0, upper, true)/(x+1));
+							totGold *= (1+((pluck-x)/10)/(x+1));
 						}
 						goldVal += (totGold * amt/50);
 					}
