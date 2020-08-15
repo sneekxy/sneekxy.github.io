@@ -1,5 +1,5 @@
 var endTime;
-var ver_num = 0.2;
+var ver_num = 0.3;
 var bil = 1000000000;
 var timeValue = [0, "none"];
 var higherTax = 1;
@@ -974,6 +974,7 @@ function resetGame(){
 
 function applyVersionUpdates(vh){
 if(vh == 0.1){
+	vh = 0.2;
 	for(var t=26; t<36;t++){
 	playerStats.unlockChecker.push(t);
 	}
@@ -993,6 +994,11 @@ if(vh == 0.1){
 		$('#questMenuSelector').show();
 	}
 }
+if(vh == 0.2){
+	vh = 0.3;
+	playerStats.roomweight = [100,15,40,20,25,25,25,25,25,15,30,150,15,5,50,35,3,12,20,20,15,35];
+}
+
 
 //for future use
 
