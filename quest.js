@@ -99,7 +99,7 @@ function questLoop(x){
 				clearInterval(questInterval);
 				
 				questShow = true;
-				var timesRan = 1+Math.floor(Math.abs(elapsedTime)/(x*1000));
+				var timesRan = Math.floor(Math.abs(elapsedTime)/(x*1000));
 				if(timesRan > 232000)
 					timesRan = 232000;
 				if(timesRan > 1){
